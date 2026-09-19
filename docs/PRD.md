@@ -185,6 +185,8 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 - Fresh migrate + seed produces a browsable focused-group leaderboard and a blocked new-problem case
 - No hand-authored UI state required to demo core flows
 
+**P4 status (2026-09-19):** Done. Syllabus in `supabase/migrations/20260919220000_neetcode150_syllabus.sql` (source `supabase/seeds/neetcode150.json`). Demo cohort in `supabase/seed.sql`: Alex Rivera 68/150, FAANG Grind Club, Marcus #1 / Alex #2 this week, overdue review blocks new problems, invite `FAANG1`. Demo password `Grid150Demo!` (`*@grid150.demo`).
+
 ---
 
 ## P5 Frontend

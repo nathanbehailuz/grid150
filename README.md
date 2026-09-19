@@ -14,9 +14,24 @@ Competitive accountability dashboard for groups finishing the NeetCode 150. Hono
 | Path | Purpose |
 | --- | --- |
 | `web/` | React + TypeScript app (Vite) |
-| `supabase/` | Local Supabase CLI config and future migrations |
+| `supabase/` | CLI config, migrations, `seed.sql`, NeetCode JSON |
 | `mockups/` | Static HTML mockups (UI reference until P5) |
 | `docs/` | Brief, design, PRD |
+
+## Demo accounts (P4)
+
+After migrations + seed (`npx supabase db query --linked -f supabase/seed.sql`):
+
+| Email | Name | Notes |
+| --- | --- | --- |
+| `alex@grid150.demo` | Alex Rivera | Primary; 68/150; focused FAANG Grind Club; overdue review |
+| `marcus@grid150.demo` | Marcus Vance | Weekly #1 |
+| `jordan@grid150.demo` | Jordan Lee | Peer |
+| `sam@grid150.demo` | Sam Ortiz | Peer |
+| `riley@grid150.demo` | Riley Chen | Peer |
+
+Password for all: `Grid150Demo!`  
+Invite code: `FAANG1`
 
 ## Web app
 
@@ -64,7 +79,7 @@ VITE_SUPABASE_ANON_KEY=<anon or publishable key from dashboard>
 npx supabase link --project-ref gvtprsfkvhdwbfvwynog
 ```
 
-Local `supabase start` needs Docker and is optional. Schema is in `supabase/migrations/` (P1+); push with `npx supabase db push --linked`.
+Local `supabase start` needs Docker and is optional. Schema is in `supabase/migrations/` (P1+); push with `npx supabase db push --linked`. Re-seed demos with `npx supabase db query --linked -f supabase/seed.sql` (`config.toml` already points `[db.seed]` at `./seed.sql` for local `db reset`).
 
 ## Mockups
 

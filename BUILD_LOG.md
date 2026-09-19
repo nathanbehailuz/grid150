@@ -20,6 +20,7 @@
 - 2026-09-19: Shipped P1 empty data contract (enums + tables + indexes + RLS on, no policies/seed/domain logic).
 - 2026-09-19: Shipped P2 auth/RLS (profile trigger, membership helpers, policies, thin email/password smoke UI).
 - 2026-09-19: Shipped P3 domain RPCs (unlock/review/attribution/scores/invites/edit window) with SQL fixtures.
+- 2026-09-19: Shipped P4 demo data (NeetCode 150 syllabus migration + FAANG Grind Club seed).
 
 ## Stack & tooling
 
@@ -29,6 +30,7 @@
 - 2026-09-19: Completed **P1 Schema**. Single migration `supabase/migrations/20260919190000_init_schema.sql` (enums, 16 tables, FKs, indexes, RLS enabled with no policies). Applied to remote via `npx supabase db push --linked`.
 - 2026-09-19: Completed **P2 Auth / authz**. Migrations `20260919200000_auth_rls.sql` (+ revoke-anon + groups creator SELECT fix). Email/password smoke UI in `web/`.
 - 2026-09-19: Completed **P3 Domain logic**. Migrations `20260919210000_domain_core.sql` (+ create_group / progress cast / invalidate ambiguity fixes). Fixtures in `supabase/tests/p3_domain.sql`.
+- 2026-09-19: Completed **P4 Demo data**. Syllabus migration `20260919220000_neetcode150_syllabus.sql` (150 problems / 18 topics from `supabase/seeds/neetcode150.json`). Demo cohort in `supabase/seed.sql` (invite `FAANG1`, password `Grid150Demo!`).
 
 ## Key decisions & trade-offs
 
@@ -52,6 +54,7 @@
 - Decision: P3 timezone source of truth is `profiles.timezone` (ISO week Monday in that zone) for streaks and weekly snapshots.
 - Decision: P3 enforces rules in Postgres SECURITY DEFINER RPCs (not Edge Functions); clients call `log_attempt`, `create_group`, `join_group_by_code`, etc.
 - Decision: weekly Progress uses weighted solves (1.0 indep / 0.6 hint) vs `daily_target * active_days`, capped at 120% before scaling to 50; Improvement is neutral 12.5 on the first week.
+- Decision: P4 keeps the NeetCode 150 list as a permanent migration; demo users/groups live in `seed.sql` so curriculum survives without replaying demo accounts.
 
 ## Hard parts / dead ends
 
@@ -78,6 +81,7 @@
 - P1 exit checks: `npx supabase db push --linked` applied `20260919190000_init_schema.sql`. `list_tables` shows 16 public tables, all `rls_enabled: true`, 0 rows. Smoke: insert topic `arrays` + problem `two-sum` at `global_order = 1`, then delete both; counts back to 0.
 - P2 exit checks: auth_rls (+ revoke + groups SELECT fix) applied. SQL smoke: signup trigger creates profile; anon sees 0 profiles/attempts; Bob cannot read Alice attempts or update her group; Alice owner can update group. `anon` cannot execute `invalidate_attempt`. `web/` typecheck, test, and build pass with auth form.
 - P3 exit checks: domain migrations applied. `supabase/tests/p3_domain.sql` proves unlock, fail-does-not-unlock, overdue review block, no retroactive attribution, dual-group attribution, weekly snapshot + neutral improvement, invalidate clears completion + writes audit.
+- P4 exit checks: 150 problems / 18 topics; Alex 68 completed; weekly standings Marcus > Alex; invite `FAANG1`; Alex `next_unlocked` = 69 with overdue review blocking `log_attempt`.
 
 ## Known limitations
 
@@ -86,7 +90,7 @@
 - Search and notifications still go nowhere. `my_study_groups.html` is leftover and not in nav.
 - GitHub CLI on this machine had an invalid token for `nathanbehailuz`; terminal auth still needs `gh auth login` if pushing.
 - Git commit identity is still the old global name/email unless changed to `nathanbehailuz` / `nz2212@nyu.edu`.
-- Syllabus empty until P4. No dashboard UI for domain RPCs until P5. Realtime leaderboards are P6.
+- No dashboard UI until P5. Demo weekly totals are narrative-adjusted after recompute so Marcus stays #1 / Alex #2 for demos.
 - Advisors may WARN on intentional SECURITY DEFINER RPCs callable by authenticated; anon execute revoked.
 - 2026-09-19: Signup copy assumes email confirmation is required; `signUp` passes `emailRedirectTo` to the app origin. Supabase Dashboard must allowlist that URL or the confirm link fails / expires oddly.
 - 2026-09-19: Trimmed auth shell copy (no P2/smoke/Supabase status line; no timezone on signed-in view).
@@ -95,4 +99,4 @@
 
 - Product definition / brief: majority of current work.
 - Mockup review → `docs/design.md`, then a visual pass to mute color, copy, and type.
-- Implementation: P0–P3 (foundations, schema, auth/RLS, domain RPCs).
+- Implementation: P0–P4 (foundations through demo seed).

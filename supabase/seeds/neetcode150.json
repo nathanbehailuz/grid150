@@ -1,0 +1,1296 @@
+{
+  "topics": [
+    {
+      "slug": "arrays-hashing",
+      "name": "Arrays & Hashing",
+      "sort_order": 1
+    },
+    {
+      "slug": "two-pointers",
+      "name": "Two Pointers",
+      "sort_order": 2
+    },
+    {
+      "slug": "sliding-window",
+      "name": "Sliding Window",
+      "sort_order": 3
+    },
+    {
+      "slug": "stack",
+      "name": "Stack",
+      "sort_order": 4
+    },
+    {
+      "slug": "binary-search",
+      "name": "Binary Search",
+      "sort_order": 5
+    },
+    {
+      "slug": "linked-list",
+      "name": "Linked List",
+      "sort_order": 6
+    },
+    {
+      "slug": "trees",
+      "name": "Trees",
+      "sort_order": 7
+    },
+    {
+      "slug": "tries",
+      "name": "Tries",
+      "sort_order": 8
+    },
+    {
+      "slug": "heap-priority-queue",
+      "name": "Heap / Priority Queue",
+      "sort_order": 9
+    },
+    {
+      "slug": "backtracking",
+      "name": "Backtracking",
+      "sort_order": 10
+    },
+    {
+      "slug": "graphs",
+      "name": "Graphs",
+      "sort_order": 11
+    },
+    {
+      "slug": "advanced-graphs",
+      "name": "Advanced Graphs",
+      "sort_order": 12
+    },
+    {
+      "slug": "1d-dynamic-programming",
+      "name": "1-D Dynamic Programming",
+      "sort_order": 13
+    },
+    {
+      "slug": "2d-dynamic-programming",
+      "name": "2-D Dynamic Programming",
+      "sort_order": 14
+    },
+    {
+      "slug": "greedy",
+      "name": "Greedy",
+      "sort_order": 15
+    },
+    {
+      "slug": "intervals",
+      "name": "Intervals",
+      "sort_order": 16
+    },
+    {
+      "slug": "math-geometry",
+      "name": "Math & Geometry",
+      "sort_order": 17
+    },
+    {
+      "slug": "bit-manipulation",
+      "name": "Bit Manipulation",
+      "sort_order": 18
+    }
+  ],
+  "problems": [
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "contains-duplicate",
+      "title": "Contains Duplicate",
+      "difficulty": "easy",
+      "global_order": 1,
+      "neetcode_url": "https://neetcode.io/problems/contains-duplicate"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "valid-anagram",
+      "title": "Valid Anagram",
+      "difficulty": "easy",
+      "global_order": 2,
+      "neetcode_url": "https://neetcode.io/problems/valid-anagram"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "two-sum",
+      "title": "Two Sum",
+      "difficulty": "easy",
+      "global_order": 3,
+      "neetcode_url": "https://neetcode.io/problems/two-sum"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "group-anagrams",
+      "title": "Group Anagrams",
+      "difficulty": "medium",
+      "global_order": 4,
+      "neetcode_url": "https://neetcode.io/problems/group-anagrams"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "top-k-frequent-elements",
+      "title": "Top K Frequent Elements",
+      "difficulty": "medium",
+      "global_order": 5,
+      "neetcode_url": "https://neetcode.io/problems/top-k-frequent-elements"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "product-of-array-except-self",
+      "title": "Product of Array Except Self",
+      "difficulty": "medium",
+      "global_order": 6,
+      "neetcode_url": "https://neetcode.io/problems/product-of-array-except-self"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "valid-sudoku",
+      "title": "Valid Sudoku",
+      "difficulty": "medium",
+      "global_order": 7,
+      "neetcode_url": "https://neetcode.io/problems/valid-sudoku"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "encode-and-decode-strings",
+      "title": "Encode and Decode Strings",
+      "difficulty": "medium",
+      "global_order": 8,
+      "neetcode_url": "https://neetcode.io/problems/encode-and-decode-strings"
+    },
+    {
+      "topic_slug": "arrays-hashing",
+      "slug": "longest-consecutive-sequence",
+      "title": "Longest Consecutive Sequence",
+      "difficulty": "medium",
+      "global_order": 9,
+      "neetcode_url": "https://neetcode.io/problems/longest-consecutive-sequence"
+    },
+    {
+      "topic_slug": "two-pointers",
+      "slug": "valid-palindrome",
+      "title": "Valid Palindrome",
+      "difficulty": "easy",
+      "global_order": 10,
+      "neetcode_url": "https://neetcode.io/problems/valid-palindrome"
+    },
+    {
+      "topic_slug": "two-pointers",
+      "slug": "two-sum-ii-input-array-is-sorted",
+      "title": "Two Sum II - Input Array Is Sorted",
+      "difficulty": "medium",
+      "global_order": 11,
+      "neetcode_url": "https://neetcode.io/problems/two-sum-ii-input-array-is-sorted"
+    },
+    {
+      "topic_slug": "two-pointers",
+      "slug": "3sum",
+      "title": "3Sum",
+      "difficulty": "medium",
+      "global_order": 12,
+      "neetcode_url": "https://neetcode.io/problems/3sum"
+    },
+    {
+      "topic_slug": "two-pointers",
+      "slug": "container-with-most-water",
+      "title": "Container With Most Water",
+      "difficulty": "medium",
+      "global_order": 13,
+      "neetcode_url": "https://neetcode.io/problems/container-with-most-water"
+    },
+    {
+      "topic_slug": "two-pointers",
+      "slug": "trapping-rain-water",
+      "title": "Trapping Rain Water",
+      "difficulty": "hard",
+      "global_order": 14,
+      "neetcode_url": "https://neetcode.io/problems/trapping-rain-water"
+    },
+    {
+      "topic_slug": "sliding-window",
+      "slug": "best-time-to-buy-and-sell-stock",
+      "title": "Best Time to Buy and Sell Stock",
+      "difficulty": "easy",
+      "global_order": 15,
+      "neetcode_url": "https://neetcode.io/problems/best-time-to-buy-and-sell-stock"
+    },
+    {
+      "topic_slug": "sliding-window",
+      "slug": "longest-substring-without-repeating-characters",
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "medium",
+      "global_order": 16,
+      "neetcode_url": "https://neetcode.io/problems/longest-substring-without-repeating-characters"
+    },
+    {
+      "topic_slug": "sliding-window",
+      "slug": "longest-repeating-character-replacement",
+      "title": "Longest Repeating Character Replacement",
+      "difficulty": "medium",
+      "global_order": 17,
+      "neetcode_url": "https://neetcode.io/problems/longest-repeating-character-replacement"
+    },
+    {
+      "topic_slug": "sliding-window",
+      "slug": "permutation-in-string",
+      "title": "Permutation in String",
+      "difficulty": "medium",
+      "global_order": 18,
+      "neetcode_url": "https://neetcode.io/problems/permutation-in-string"
+    },
+    {
+      "topic_slug": "sliding-window",
+      "slug": "minimum-window-substring",
+      "title": "Minimum Window Substring",
+      "difficulty": "hard",
+      "global_order": 19,
+      "neetcode_url": "https://neetcode.io/problems/minimum-window-substring"
+    },
+    {
+      "topic_slug": "sliding-window",
+      "slug": "sliding-window-maximum",
+      "title": "Sliding Window Maximum",
+      "difficulty": "hard",
+      "global_order": 20,
+      "neetcode_url": "https://neetcode.io/problems/sliding-window-maximum"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "difficulty": "easy",
+      "global_order": 21,
+      "neetcode_url": "https://neetcode.io/problems/valid-parentheses"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "min-stack",
+      "title": "Min Stack",
+      "difficulty": "medium",
+      "global_order": 22,
+      "neetcode_url": "https://neetcode.io/problems/min-stack"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "evaluate-reverse-polish-notation",
+      "title": "Evaluate Reverse Polish Notation",
+      "difficulty": "medium",
+      "global_order": 23,
+      "neetcode_url": "https://neetcode.io/problems/evaluate-reverse-polish-notation"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "generate-parentheses",
+      "title": "Generate Parentheses",
+      "difficulty": "medium",
+      "global_order": 24,
+      "neetcode_url": "https://neetcode.io/problems/generate-parentheses"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "daily-temperatures",
+      "title": "Daily Temperatures",
+      "difficulty": "medium",
+      "global_order": 25,
+      "neetcode_url": "https://neetcode.io/problems/daily-temperatures"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "car-fleet",
+      "title": "Car Fleet",
+      "difficulty": "medium",
+      "global_order": 26,
+      "neetcode_url": "https://neetcode.io/problems/car-fleet"
+    },
+    {
+      "topic_slug": "stack",
+      "slug": "largest-rectangle-in-histogram",
+      "title": "Largest Rectangle in Histogram",
+      "difficulty": "hard",
+      "global_order": 27,
+      "neetcode_url": "https://neetcode.io/problems/largest-rectangle-in-histogram"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "binary-search",
+      "title": "Binary Search",
+      "difficulty": "easy",
+      "global_order": 28,
+      "neetcode_url": "https://neetcode.io/problems/binary-search"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "search-a-2d-matrix",
+      "title": "Search a 2D Matrix",
+      "difficulty": "medium",
+      "global_order": 29,
+      "neetcode_url": "https://neetcode.io/problems/search-a-2d-matrix"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "koko-eating-bananas",
+      "title": "Koko Eating Bananas",
+      "difficulty": "medium",
+      "global_order": 30,
+      "neetcode_url": "https://neetcode.io/problems/koko-eating-bananas"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "find-minimum-in-rotated-sorted-array",
+      "title": "Find Minimum in Rotated Sorted Array",
+      "difficulty": "medium",
+      "global_order": 31,
+      "neetcode_url": "https://neetcode.io/problems/find-minimum-in-rotated-sorted-array"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "search-in-rotated-sorted-array",
+      "title": "Search in Rotated Sorted Array",
+      "difficulty": "medium",
+      "global_order": 32,
+      "neetcode_url": "https://neetcode.io/problems/search-in-rotated-sorted-array"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "time-based-key-value-store",
+      "title": "Time Based Key-Value Store",
+      "difficulty": "medium",
+      "global_order": 33,
+      "neetcode_url": "https://neetcode.io/problems/time-based-key-value-store"
+    },
+    {
+      "topic_slug": "binary-search",
+      "slug": "median-of-two-sorted-arrays",
+      "title": "Median of Two Sorted Arrays",
+      "difficulty": "hard",
+      "global_order": 34,
+      "neetcode_url": "https://neetcode.io/problems/median-of-two-sorted-arrays"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "reverse-linked-list",
+      "title": "Reverse Linked List",
+      "difficulty": "easy",
+      "global_order": 35,
+      "neetcode_url": "https://neetcode.io/problems/reverse-linked-list"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "merge-two-sorted-lists",
+      "title": "Merge Two Sorted Lists",
+      "difficulty": "easy",
+      "global_order": 36,
+      "neetcode_url": "https://neetcode.io/problems/merge-two-sorted-lists"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "linked-list-cycle",
+      "title": "Linked List Cycle",
+      "difficulty": "easy",
+      "global_order": 37,
+      "neetcode_url": "https://neetcode.io/problems/linked-list-cycle"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "reorder-list",
+      "title": "Reorder List",
+      "difficulty": "medium",
+      "global_order": 38,
+      "neetcode_url": "https://neetcode.io/problems/reorder-list"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "remove-nth-node-from-end-of-list",
+      "title": "Remove Nth Node From End of List",
+      "difficulty": "medium",
+      "global_order": 39,
+      "neetcode_url": "https://neetcode.io/problems/remove-nth-node-from-end-of-list"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "copy-list-with-random-pointer",
+      "title": "Copy List with Random Pointer",
+      "difficulty": "medium",
+      "global_order": 40,
+      "neetcode_url": "https://neetcode.io/problems/copy-list-with-random-pointer"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "add-two-numbers",
+      "title": "Add Two Numbers",
+      "difficulty": "medium",
+      "global_order": 41,
+      "neetcode_url": "https://neetcode.io/problems/add-two-numbers"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "find-the-duplicate-number",
+      "title": "Find the Duplicate Number",
+      "difficulty": "medium",
+      "global_order": 42,
+      "neetcode_url": "https://neetcode.io/problems/find-the-duplicate-number"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "lru-cache",
+      "title": "LRU Cache",
+      "difficulty": "medium",
+      "global_order": 43,
+      "neetcode_url": "https://neetcode.io/problems/lru-cache"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "merge-k-sorted-lists",
+      "title": "Merge k Sorted Lists",
+      "difficulty": "hard",
+      "global_order": 44,
+      "neetcode_url": "https://neetcode.io/problems/merge-k-sorted-lists"
+    },
+    {
+      "topic_slug": "linked-list",
+      "slug": "reverse-nodes-in-k-group",
+      "title": "Reverse Nodes in k-Group",
+      "difficulty": "hard",
+      "global_order": 45,
+      "neetcode_url": "https://neetcode.io/problems/reverse-nodes-in-k-group"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "invert-binary-tree",
+      "title": "Invert Binary Tree",
+      "difficulty": "easy",
+      "global_order": 46,
+      "neetcode_url": "https://neetcode.io/problems/invert-binary-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "maximum-depth-of-binary-tree",
+      "title": "Maximum Depth of Binary Tree",
+      "difficulty": "easy",
+      "global_order": 47,
+      "neetcode_url": "https://neetcode.io/problems/maximum-depth-of-binary-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "diameter-of-binary-tree",
+      "title": "Diameter of Binary Tree",
+      "difficulty": "easy",
+      "global_order": 48,
+      "neetcode_url": "https://neetcode.io/problems/diameter-of-binary-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "balanced-binary-tree",
+      "title": "Balanced Binary Tree",
+      "difficulty": "easy",
+      "global_order": 49,
+      "neetcode_url": "https://neetcode.io/problems/balanced-binary-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "same-tree",
+      "title": "Same Tree",
+      "difficulty": "easy",
+      "global_order": 50,
+      "neetcode_url": "https://neetcode.io/problems/same-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "subtree-of-another-tree",
+      "title": "Subtree of Another Tree",
+      "difficulty": "easy",
+      "global_order": 51,
+      "neetcode_url": "https://neetcode.io/problems/subtree-of-another-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+      "title": "Lowest Common Ancestor of a Binary Search Tree",
+      "difficulty": "medium",
+      "global_order": 52,
+      "neetcode_url": "https://neetcode.io/problems/lowest-common-ancestor-of-a-binary-search-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "binary-tree-level-order-traversal",
+      "title": "Binary Tree Level Order Traversal",
+      "difficulty": "medium",
+      "global_order": 53,
+      "neetcode_url": "https://neetcode.io/problems/binary-tree-level-order-traversal"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "binary-tree-right-side-view",
+      "title": "Binary Tree Right Side View",
+      "difficulty": "medium",
+      "global_order": 54,
+      "neetcode_url": "https://neetcode.io/problems/binary-tree-right-side-view"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "count-good-nodes-in-binary-tree",
+      "title": "Count Good Nodes in Binary Tree",
+      "difficulty": "medium",
+      "global_order": 55,
+      "neetcode_url": "https://neetcode.io/problems/count-good-nodes-in-binary-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "validate-binary-search-tree",
+      "title": "Validate Binary Search Tree",
+      "difficulty": "medium",
+      "global_order": 56,
+      "neetcode_url": "https://neetcode.io/problems/validate-binary-search-tree"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "kth-smallest-element-in-a-bst",
+      "title": "Kth Smallest Element in a BST",
+      "difficulty": "medium",
+      "global_order": 57,
+      "neetcode_url": "https://neetcode.io/problems/kth-smallest-element-in-a-bst"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+      "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+      "difficulty": "medium",
+      "global_order": 58,
+      "neetcode_url": "https://neetcode.io/problems/construct-binary-tree-from-preorder-and-inorder-traversal"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "binary-tree-maximum-path-sum",
+      "title": "Binary Tree Maximum Path Sum",
+      "difficulty": "hard",
+      "global_order": 59,
+      "neetcode_url": "https://neetcode.io/problems/binary-tree-maximum-path-sum"
+    },
+    {
+      "topic_slug": "trees",
+      "slug": "serialize-and-deserialize-binary-tree",
+      "title": "Serialize and Deserialize Binary Tree",
+      "difficulty": "hard",
+      "global_order": 60,
+      "neetcode_url": "https://neetcode.io/problems/serialize-and-deserialize-binary-tree"
+    },
+    {
+      "topic_slug": "tries",
+      "slug": "implement-trie-prefix-tree",
+      "title": "Implement Trie (Prefix Tree)",
+      "difficulty": "medium",
+      "global_order": 61,
+      "neetcode_url": "https://neetcode.io/problems/implement-trie-prefix-tree"
+    },
+    {
+      "topic_slug": "tries",
+      "slug": "design-add-and-search-words-data-structure",
+      "title": "Design Add and Search Words Data Structure",
+      "difficulty": "medium",
+      "global_order": 62,
+      "neetcode_url": "https://neetcode.io/problems/design-add-and-search-words-data-structure"
+    },
+    {
+      "topic_slug": "tries",
+      "slug": "word-search-ii",
+      "title": "Word Search II",
+      "difficulty": "hard",
+      "global_order": 63,
+      "neetcode_url": "https://neetcode.io/problems/word-search-ii"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "kth-largest-element-in-a-stream",
+      "title": "Kth Largest Element in a Stream",
+      "difficulty": "easy",
+      "global_order": 64,
+      "neetcode_url": "https://neetcode.io/problems/kth-largest-element-in-a-stream"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "last-stone-weight",
+      "title": "Last Stone Weight",
+      "difficulty": "easy",
+      "global_order": 65,
+      "neetcode_url": "https://neetcode.io/problems/last-stone-weight"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "k-closest-points-to-origin",
+      "title": "K Closest Points to Origin",
+      "difficulty": "medium",
+      "global_order": 66,
+      "neetcode_url": "https://neetcode.io/problems/k-closest-points-to-origin"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "kth-largest-element-in-an-array",
+      "title": "Kth Largest Element in an Array",
+      "difficulty": "medium",
+      "global_order": 67,
+      "neetcode_url": "https://neetcode.io/problems/kth-largest-element-in-an-array"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "task-scheduler",
+      "title": "Task Scheduler",
+      "difficulty": "medium",
+      "global_order": 68,
+      "neetcode_url": "https://neetcode.io/problems/task-scheduler"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "design-twitter",
+      "title": "Design Twitter",
+      "difficulty": "medium",
+      "global_order": 69,
+      "neetcode_url": "https://neetcode.io/problems/design-twitter"
+    },
+    {
+      "topic_slug": "heap-priority-queue",
+      "slug": "find-median-from-data-stream",
+      "title": "Find Median from Data Stream",
+      "difficulty": "hard",
+      "global_order": 70,
+      "neetcode_url": "https://neetcode.io/problems/find-median-from-data-stream"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "subsets",
+      "title": "Subsets",
+      "difficulty": "medium",
+      "global_order": 71,
+      "neetcode_url": "https://neetcode.io/problems/subsets"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "combination-sum",
+      "title": "Combination Sum",
+      "difficulty": "medium",
+      "global_order": 72,
+      "neetcode_url": "https://neetcode.io/problems/combination-sum"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "permutations",
+      "title": "Permutations",
+      "difficulty": "medium",
+      "global_order": 73,
+      "neetcode_url": "https://neetcode.io/problems/permutations"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "subsets-ii",
+      "title": "Subsets II",
+      "difficulty": "medium",
+      "global_order": 74,
+      "neetcode_url": "https://neetcode.io/problems/subsets-ii"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "combination-sum-ii",
+      "title": "Combination Sum II",
+      "difficulty": "medium",
+      "global_order": 75,
+      "neetcode_url": "https://neetcode.io/problems/combination-sum-ii"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "word-search",
+      "title": "Word Search",
+      "difficulty": "medium",
+      "global_order": 76,
+      "neetcode_url": "https://neetcode.io/problems/word-search"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "palindrome-partitioning",
+      "title": "Palindrome Partitioning",
+      "difficulty": "medium",
+      "global_order": 77,
+      "neetcode_url": "https://neetcode.io/problems/palindrome-partitioning"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "letter-combinations-of-a-phone-number",
+      "title": "Letter Combinations of a Phone Number",
+      "difficulty": "medium",
+      "global_order": 78,
+      "neetcode_url": "https://neetcode.io/problems/letter-combinations-of-a-phone-number"
+    },
+    {
+      "topic_slug": "backtracking",
+      "slug": "n-queens",
+      "title": "N-Queens",
+      "difficulty": "hard",
+      "global_order": 79,
+      "neetcode_url": "https://neetcode.io/problems/n-queens"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "number-of-islands",
+      "title": "Number of Islands",
+      "difficulty": "medium",
+      "global_order": 80,
+      "neetcode_url": "https://neetcode.io/problems/number-of-islands"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "clone-graph",
+      "title": "Clone Graph",
+      "difficulty": "medium",
+      "global_order": 81,
+      "neetcode_url": "https://neetcode.io/problems/clone-graph"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "max-area-of-island",
+      "title": "Max Area of Island",
+      "difficulty": "medium",
+      "global_order": 82,
+      "neetcode_url": "https://neetcode.io/problems/max-area-of-island"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "pacific-atlantic-water-flow",
+      "title": "Pacific Atlantic Water Flow",
+      "difficulty": "medium",
+      "global_order": 83,
+      "neetcode_url": "https://neetcode.io/problems/pacific-atlantic-water-flow"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "surrounded-regions",
+      "title": "Surrounded Regions",
+      "difficulty": "medium",
+      "global_order": 84,
+      "neetcode_url": "https://neetcode.io/problems/surrounded-regions"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "rotting-oranges",
+      "title": "Rotting Oranges",
+      "difficulty": "medium",
+      "global_order": 85,
+      "neetcode_url": "https://neetcode.io/problems/rotting-oranges"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "walls-and-gates",
+      "title": "Walls and Gates",
+      "difficulty": "medium",
+      "global_order": 86,
+      "neetcode_url": "https://neetcode.io/problems/walls-and-gates"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "course-schedule",
+      "title": "Course Schedule",
+      "difficulty": "medium",
+      "global_order": 87,
+      "neetcode_url": "https://neetcode.io/problems/course-schedule"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "course-schedule-ii",
+      "title": "Course Schedule II",
+      "difficulty": "medium",
+      "global_order": 88,
+      "neetcode_url": "https://neetcode.io/problems/course-schedule-ii"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "redundant-connection",
+      "title": "Redundant Connection",
+      "difficulty": "medium",
+      "global_order": 89,
+      "neetcode_url": "https://neetcode.io/problems/redundant-connection"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "number-of-connected-components-in-an-undirected-graph",
+      "title": "Number of Connected Components in an Undirected Graph",
+      "difficulty": "medium",
+      "global_order": 90,
+      "neetcode_url": "https://neetcode.io/problems/number-of-connected-components-in-an-undirected-graph"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "graph-valid-tree",
+      "title": "Graph Valid Tree",
+      "difficulty": "medium",
+      "global_order": 91,
+      "neetcode_url": "https://neetcode.io/problems/graph-valid-tree"
+    },
+    {
+      "topic_slug": "graphs",
+      "slug": "word-ladder",
+      "title": "Word Ladder",
+      "difficulty": "hard",
+      "global_order": 92,
+      "neetcode_url": "https://neetcode.io/problems/word-ladder"
+    },
+    {
+      "topic_slug": "advanced-graphs",
+      "slug": "reconstruct-itinerary",
+      "title": "Reconstruct Itinerary",
+      "difficulty": "hard",
+      "global_order": 93,
+      "neetcode_url": "https://neetcode.io/problems/reconstruct-itinerary"
+    },
+    {
+      "topic_slug": "advanced-graphs",
+      "slug": "min-cost-to-connect-all-points",
+      "title": "Min Cost to Connect All Points",
+      "difficulty": "medium",
+      "global_order": 94,
+      "neetcode_url": "https://neetcode.io/problems/min-cost-to-connect-all-points"
+    },
+    {
+      "topic_slug": "advanced-graphs",
+      "slug": "network-delay-time",
+      "title": "Network Delay Time",
+      "difficulty": "medium",
+      "global_order": 95,
+      "neetcode_url": "https://neetcode.io/problems/network-delay-time"
+    },
+    {
+      "topic_slug": "advanced-graphs",
+      "slug": "swim-in-rising-water",
+      "title": "Swim in Rising Water",
+      "difficulty": "hard",
+      "global_order": 96,
+      "neetcode_url": "https://neetcode.io/problems/swim-in-rising-water"
+    },
+    {
+      "topic_slug": "advanced-graphs",
+      "slug": "alien-dictionary",
+      "title": "Alien Dictionary",
+      "difficulty": "hard",
+      "global_order": 97,
+      "neetcode_url": "https://neetcode.io/problems/alien-dictionary"
+    },
+    {
+      "topic_slug": "advanced-graphs",
+      "slug": "cheapest-flights-within-k-stops",
+      "title": "Cheapest Flights Within K Stops",
+      "difficulty": "medium",
+      "global_order": 98,
+      "neetcode_url": "https://neetcode.io/problems/cheapest-flights-within-k-stops"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "climbing-stairs",
+      "title": "Climbing Stairs",
+      "difficulty": "easy",
+      "global_order": 99,
+      "neetcode_url": "https://neetcode.io/problems/climbing-stairs"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "min-cost-climbing-stairs",
+      "title": "Min Cost Climbing Stairs",
+      "difficulty": "easy",
+      "global_order": 100,
+      "neetcode_url": "https://neetcode.io/problems/min-cost-climbing-stairs"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "house-robber",
+      "title": "House Robber",
+      "difficulty": "medium",
+      "global_order": 101,
+      "neetcode_url": "https://neetcode.io/problems/house-robber"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "house-robber-ii",
+      "title": "House Robber II",
+      "difficulty": "medium",
+      "global_order": 102,
+      "neetcode_url": "https://neetcode.io/problems/house-robber-ii"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "longest-palindromic-substring",
+      "title": "Longest Palindromic Substring",
+      "difficulty": "medium",
+      "global_order": 103,
+      "neetcode_url": "https://neetcode.io/problems/longest-palindromic-substring"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "palindromic-substrings",
+      "title": "Palindromic Substrings",
+      "difficulty": "medium",
+      "global_order": 104,
+      "neetcode_url": "https://neetcode.io/problems/palindromic-substrings"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "decode-ways",
+      "title": "Decode Ways",
+      "difficulty": "medium",
+      "global_order": 105,
+      "neetcode_url": "https://neetcode.io/problems/decode-ways"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "coin-change",
+      "title": "Coin Change",
+      "difficulty": "medium",
+      "global_order": 106,
+      "neetcode_url": "https://neetcode.io/problems/coin-change"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "maximum-product-subarray",
+      "title": "Maximum Product Subarray",
+      "difficulty": "medium",
+      "global_order": 107,
+      "neetcode_url": "https://neetcode.io/problems/maximum-product-subarray"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "word-break",
+      "title": "Word Break",
+      "difficulty": "medium",
+      "global_order": 108,
+      "neetcode_url": "https://neetcode.io/problems/word-break"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "longest-increasing-subsequence",
+      "title": "Longest Increasing Subsequence",
+      "difficulty": "medium",
+      "global_order": 109,
+      "neetcode_url": "https://neetcode.io/problems/longest-increasing-subsequence"
+    },
+    {
+      "topic_slug": "1d-dynamic-programming",
+      "slug": "partition-equal-subset-sum",
+      "title": "Partition Equal Subset Sum",
+      "difficulty": "medium",
+      "global_order": 110,
+      "neetcode_url": "https://neetcode.io/problems/partition-equal-subset-sum"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "unique-paths",
+      "title": "Unique Paths",
+      "difficulty": "medium",
+      "global_order": 111,
+      "neetcode_url": "https://neetcode.io/problems/unique-paths"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "longest-common-subsequence",
+      "title": "Longest Common Subsequence",
+      "difficulty": "medium",
+      "global_order": 112,
+      "neetcode_url": "https://neetcode.io/problems/longest-common-subsequence"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+      "title": "Best Time to Buy and Sell Stock with Cooldown",
+      "difficulty": "medium",
+      "global_order": 113,
+      "neetcode_url": "https://neetcode.io/problems/best-time-to-buy-and-sell-stock-with-cooldown"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "coin-change-ii",
+      "title": "Coin Change II",
+      "difficulty": "medium",
+      "global_order": 114,
+      "neetcode_url": "https://neetcode.io/problems/coin-change-ii"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "target-sum",
+      "title": "Target Sum",
+      "difficulty": "medium",
+      "global_order": 115,
+      "neetcode_url": "https://neetcode.io/problems/target-sum"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "interleaving-string",
+      "title": "Interleaving String",
+      "difficulty": "medium",
+      "global_order": 116,
+      "neetcode_url": "https://neetcode.io/problems/interleaving-string"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "longest-increasing-path-in-a-matrix",
+      "title": "Longest Increasing Path in a Matrix",
+      "difficulty": "hard",
+      "global_order": 117,
+      "neetcode_url": "https://neetcode.io/problems/longest-increasing-path-in-a-matrix"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "distinct-subsequences",
+      "title": "Distinct Subsequences",
+      "difficulty": "hard",
+      "global_order": 118,
+      "neetcode_url": "https://neetcode.io/problems/distinct-subsequences"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "edit-distance",
+      "title": "Edit Distance",
+      "difficulty": "medium",
+      "global_order": 119,
+      "neetcode_url": "https://neetcode.io/problems/edit-distance"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "burst-balloons",
+      "title": "Burst Balloons",
+      "difficulty": "hard",
+      "global_order": 120,
+      "neetcode_url": "https://neetcode.io/problems/burst-balloons"
+    },
+    {
+      "topic_slug": "2d-dynamic-programming",
+      "slug": "regular-expression-matching",
+      "title": "Regular Expression Matching",
+      "difficulty": "hard",
+      "global_order": 121,
+      "neetcode_url": "https://neetcode.io/problems/regular-expression-matching"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "maximum-subarray",
+      "title": "Maximum Subarray",
+      "difficulty": "medium",
+      "global_order": 122,
+      "neetcode_url": "https://neetcode.io/problems/maximum-subarray"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "jump-game",
+      "title": "Jump Game",
+      "difficulty": "medium",
+      "global_order": 123,
+      "neetcode_url": "https://neetcode.io/problems/jump-game"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "jump-game-ii",
+      "title": "Jump Game II",
+      "difficulty": "medium",
+      "global_order": 124,
+      "neetcode_url": "https://neetcode.io/problems/jump-game-ii"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "gas-station",
+      "title": "Gas Station",
+      "difficulty": "medium",
+      "global_order": 125,
+      "neetcode_url": "https://neetcode.io/problems/gas-station"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "hand-of-straights",
+      "title": "Hand of Straights",
+      "difficulty": "medium",
+      "global_order": 126,
+      "neetcode_url": "https://neetcode.io/problems/hand-of-straights"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "merge-triplets-to-form-target-triplet",
+      "title": "Merge Triplets to Form Target Triplet",
+      "difficulty": "medium",
+      "global_order": 127,
+      "neetcode_url": "https://neetcode.io/problems/merge-triplets-to-form-target-triplet"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "partition-labels",
+      "title": "Partition Labels",
+      "difficulty": "medium",
+      "global_order": 128,
+      "neetcode_url": "https://neetcode.io/problems/partition-labels"
+    },
+    {
+      "topic_slug": "greedy",
+      "slug": "valid-parenthesis-string",
+      "title": "Valid Parenthesis String",
+      "difficulty": "medium",
+      "global_order": 129,
+      "neetcode_url": "https://neetcode.io/problems/valid-parenthesis-string"
+    },
+    {
+      "topic_slug": "intervals",
+      "slug": "insert-interval",
+      "title": "Insert Interval",
+      "difficulty": "medium",
+      "global_order": 130,
+      "neetcode_url": "https://neetcode.io/problems/insert-interval"
+    },
+    {
+      "topic_slug": "intervals",
+      "slug": "merge-intervals",
+      "title": "Merge Intervals",
+      "difficulty": "medium",
+      "global_order": 131,
+      "neetcode_url": "https://neetcode.io/problems/merge-intervals"
+    },
+    {
+      "topic_slug": "intervals",
+      "slug": "non-overlapping-intervals",
+      "title": "Non-overlapping Intervals",
+      "difficulty": "medium",
+      "global_order": 132,
+      "neetcode_url": "https://neetcode.io/problems/non-overlapping-intervals"
+    },
+    {
+      "topic_slug": "intervals",
+      "slug": "meeting-rooms",
+      "title": "Meeting Rooms",
+      "difficulty": "easy",
+      "global_order": 133,
+      "neetcode_url": "https://neetcode.io/problems/meeting-rooms"
+    },
+    {
+      "topic_slug": "intervals",
+      "slug": "meeting-rooms-ii",
+      "title": "Meeting Rooms II",
+      "difficulty": "medium",
+      "global_order": 134,
+      "neetcode_url": "https://neetcode.io/problems/meeting-rooms-ii"
+    },
+    {
+      "topic_slug": "intervals",
+      "slug": "minimum-interval-to-include-each-query",
+      "title": "Minimum Interval to Include Each Query",
+      "difficulty": "hard",
+      "global_order": 135,
+      "neetcode_url": "https://neetcode.io/problems/minimum-interval-to-include-each-query"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "rotate-image",
+      "title": "Rotate Image",
+      "difficulty": "medium",
+      "global_order": 136,
+      "neetcode_url": "https://neetcode.io/problems/rotate-image"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "spiral-matrix",
+      "title": "Spiral Matrix",
+      "difficulty": "medium",
+      "global_order": 137,
+      "neetcode_url": "https://neetcode.io/problems/spiral-matrix"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "set-matrix-zeroes",
+      "title": "Set Matrix Zeroes",
+      "difficulty": "medium",
+      "global_order": 138,
+      "neetcode_url": "https://neetcode.io/problems/set-matrix-zeroes"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "happy-number",
+      "title": "Happy Number",
+      "difficulty": "easy",
+      "global_order": 139,
+      "neetcode_url": "https://neetcode.io/problems/happy-number"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "plus-one",
+      "title": "Plus One",
+      "difficulty": "easy",
+      "global_order": 140,
+      "neetcode_url": "https://neetcode.io/problems/plus-one"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "powx-n",
+      "title": "Pow(x, n)",
+      "difficulty": "medium",
+      "global_order": 141,
+      "neetcode_url": "https://neetcode.io/problems/powx-n"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "multiply-strings",
+      "title": "Multiply Strings",
+      "difficulty": "medium",
+      "global_order": 142,
+      "neetcode_url": "https://neetcode.io/problems/multiply-strings"
+    },
+    {
+      "topic_slug": "math-geometry",
+      "slug": "detect-squares",
+      "title": "Detect Squares",
+      "difficulty": "medium",
+      "global_order": 143,
+      "neetcode_url": "https://neetcode.io/problems/detect-squares"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "single-number",
+      "title": "Single Number",
+      "difficulty": "easy",
+      "global_order": 144,
+      "neetcode_url": "https://neetcode.io/problems/single-number"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "number-of-1-bits",
+      "title": "Number of 1 Bits",
+      "difficulty": "easy",
+      "global_order": 145,
+      "neetcode_url": "https://neetcode.io/problems/number-of-1-bits"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "counting-bits",
+      "title": "Counting Bits",
+      "difficulty": "easy",
+      "global_order": 146,
+      "neetcode_url": "https://neetcode.io/problems/counting-bits"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "reverse-bits",
+      "title": "Reverse Bits",
+      "difficulty": "easy",
+      "global_order": 147,
+      "neetcode_url": "https://neetcode.io/problems/reverse-bits"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "missing-number",
+      "title": "Missing Number",
+      "difficulty": "easy",
+      "global_order": 148,
+      "neetcode_url": "https://neetcode.io/problems/missing-number"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "sum-of-two-integers",
+      "title": "Sum of Two Integers",
+      "difficulty": "medium",
+      "global_order": 149,
+      "neetcode_url": "https://neetcode.io/problems/sum-of-two-integers"
+    },
+    {
+      "topic_slug": "bit-manipulation",
+      "slug": "reverse-integer",
+      "title": "Reverse Integer",
+      "difficulty": "medium",
+      "global_order": 150,
+      "neetcode_url": "https://neetcode.io/problems/reverse-integer"
+    }
+  ]
+}
