@@ -30,7 +30,10 @@ npm run dev
 
 P2 ships a minimal email/password signup and login shell (not the full dashboard). After signup, a `profiles` row is created by a database trigger.
 
-**Auth dashboard note:** Email provider must be enabled on the Supabase project. For local smoke you may turn off “Confirm email”; re-enable before production (P6).
+**Auth dashboard notes**
+
+- Email provider enabled; confirmation is on for this project.
+- Under **Authentication → URL configuration**, set **Site URL** to `http://localhost:5173` (or your deployed origin) and add the same origin to **Redirect URLs** (e.g. `http://localhost:5173/**`). Confirmation links use `emailRedirectTo` from the app and must match an allowlisted URL.
 
 Other scripts:
 

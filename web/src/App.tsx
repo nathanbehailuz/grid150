@@ -5,14 +5,16 @@ import {
 } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import './App.css'
-import { isSupabaseConfigured, supabase } from './lib/supabase'
+import {
+  authRedirectTo,
+  isSupabaseConfigured,
+  supabase,
+} from './lib/supabase'
 
 type Mode = 'login' | 'signup'
 
 type Profile = {
   display_name: string
-  timezone: string
-  focused_group_id: string | null
 }
 
 function App() {
@@ -28,14 +30,26 @@ function App() {
   useEffect(() => {
     if (!supabase) return
 
+    const params = new URLSearchParams(
+      window.location.hash.replace(/^#/, ''),
+    )
+    const authError = params.get('error_description') ?? params.get('error')
+    if (authError) {
+      setMessage(decodeURIComponent(authError.replace(/\+/g, ' ')))
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+
     void supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, next) => {
+    } = supabase.auth.onAuthStateChange((event, next) => {
       setSession(next)
+      if (event === 'SIGNED_IN' && window.location.hash) {
+        window.history.replaceState({}, document.title, window.location.pathname)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -51,7 +65,7 @@ function App() {
     void (async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('display_name, timezone, focused_group_id')
+        .select('display_name')
         .eq('id', session.user.id)
         .maybeSingle()
 
@@ -78,18 +92,23 @@ function App() {
 
     try {
       if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
+            emailRedirectTo: authRedirectTo(),
             data: { display_name: displayName.trim() || undefined },
           },
         })
         if (error) throw error
-        setMessage(
-          'Signed up. If email confirmation is on, check your inbox; otherwise you are ready to log in.',
-        )
-        setMode('login')
+        if (data.session) {
+          setMessage('Account created. You are signed in.')
+        } else {
+          setMessage(
+            'Account created. Check your email to confirm your address, then return here to log in.',
+          )
+          setMode('login')
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -117,19 +136,13 @@ function App() {
     <main className="shell">
       <h1>Grid150</h1>
       <p className="lede">
-        Competitive accountability for the NeetCode 150. P2 auth smoke: email /
-        password signup and login against Supabase.
-      </p>
-
-      <p className="status" data-testid="supabase-status">
-        Supabase:{' '}
-        {isSupabaseConfigured ? 'configured' : 'env not set (see .env.example)'}
+        Competitive accountability for the NeetCode 150.
       </p>
 
       {!isSupabaseConfigured ? (
         <p className="message" role="status">
-          Copy <code>web/.env.example</code> to <code>web/.env.local</code> and
-          set the anon URL and key.
+          Auth is unavailable. Add your Supabase URL and anon key to{' '}
+          <code>web/.env.local</code>.
         </p>
       ) : session?.user ? (
         <AuthSession
@@ -184,10 +197,6 @@ function AuthSession({
           <dd data-testid="profile-display-name">
             {profile?.display_name ?? 'Loading profile…'}
           </dd>
-        </div>
-        <div>
-          <dt>Timezone</dt>
-          <dd>{profile?.timezone ?? '—'}</dd>
         </div>
       </dl>
       {message ? (

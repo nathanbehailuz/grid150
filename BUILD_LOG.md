@@ -19,6 +19,7 @@
 - 2026-09-19: Wrote `docs/PRD.md` as the implementation roadmap (P0–P6). Product rules stay in the brief; build order and brief/mockup gaps live in the PRD.
 - 2026-09-19: Shipped P1 empty data contract (enums + tables + indexes + RLS on, no policies/seed/domain logic).
 - 2026-09-19: Shipped P2 auth/RLS (profile trigger, membership helpers, policies, thin email/password smoke UI).
+- 2026-09-19: Shipped P3 domain RPCs (unlock/review/attribution/scores/invites/edit window) with SQL fixtures.
 
 ## Stack & tooling
 
@@ -27,6 +28,7 @@
 - App connects via `web/.env.local` anon URL/key from the dashboard. Remote is linked for CLI `db push`.
 - 2026-09-19: Completed **P1 Schema**. Single migration `supabase/migrations/20260919190000_init_schema.sql` (enums, 16 tables, FKs, indexes, RLS enabled with no policies). Applied to remote via `npx supabase db push --linked`.
 - 2026-09-19: Completed **P2 Auth / authz**. Migrations `20260919200000_auth_rls.sql` (+ revoke-anon + groups creator SELECT fix). Email/password smoke UI in `web/`.
+- 2026-09-19: Completed **P3 Domain logic**. Migrations `20260919210000_domain_core.sql` (+ create_group / progress cast / invalidate ambiguity fixes). Fixtures in `supabase/tests/p3_domain.sql`.
 
 ## Key decisions & trade-offs
 
@@ -47,12 +49,16 @@
 - Decision: P2 helpers and admin RPCs live under `app_private` / narrow public wrappers; attempts stay owner-only SELECT so private reflections never leak via RLS (alternative considered: column grants, which cannot vary by user).
 - Decision: admin invalidate uses `public.invalidate_attempt` SECURITY DEFINER returning only id/timestamps — not a full attempt row.
 - Decision: groups SELECT includes `created_by = auth.uid()` because INSERT RETURNING evaluates SELECT before the AFTER bootstrap trigger adds owner membership.
+- Decision: P3 timezone source of truth is `profiles.timezone` (ISO week Monday in that zone) for streaks and weekly snapshots.
+- Decision: P3 enforces rules in Postgres SECURITY DEFINER RPCs (not Edge Functions); clients call `log_attempt`, `create_group`, `join_group_by_code`, etc.
+- Decision: weekly Progress uses weighted solves (1.0 indep / 0.6 hint) vs `daily_target * active_days`, capped at 120% before scaling to 50; Improvement is neutral 12.5 on the first week.
 
 ## Hard parts / dead ends
 
 - Today’s review modal used both `hidden` and `flex`, so the overlay sat on top of the page and ate clicks. Removed the conflicting `flex` until the modal is opened.
 - P0: Vite 8 / Vitest 4 from `create-vite` failed to load rolldown native bindings on Node 22.9. Pinned Vite 5.4 + Vitest 2.1 instead.
 - P2: first groups INSERT under RLS failed until SELECT allowed the creator — RETURNING runs before the owner-membership AFTER trigger.
+- P3: RETURNS TABLE column names collided with INSERT/SELECT targets in `create_group` / `invalidate_attempt`; fixed with `#variable_conflict use_column`.
 
 ## How I verified it works
 
@@ -71,19 +77,22 @@
 - P0 exit checks: `npm run typecheck`, `npm test`, and `npm run build` succeed in `web/`. Remote project `grid150` is ACTIVE_HEALTHY; `.env.local` has URL + anon key. `npx oxlint .` is clean.
 - P1 exit checks: `npx supabase db push --linked` applied `20260919190000_init_schema.sql`. `list_tables` shows 16 public tables, all `rls_enabled: true`, 0 rows. Smoke: insert topic `arrays` + problem `two-sum` at `global_order = 1`, then delete both; counts back to 0.
 - P2 exit checks: auth_rls (+ revoke + groups SELECT fix) applied. SQL smoke: signup trigger creates profile; anon sees 0 profiles/attempts; Bob cannot read Alice attempts or update her group; Alice owner can update group. `anon` cannot execute `invalidate_attempt`. `web/` typecheck, test, and build pass with auth form.
+- P3 exit checks: domain migrations applied. `supabase/tests/p3_domain.sql` proves unlock, fail-does-not-unlock, overdue review block, no retroactive attribution, dual-group attribution, weekly snapshot + neutral improvement, invalidate clears completion + writes audit.
 
 ## Known limitations
 
-- Mockups still missing: auth polish, review queue, group admin, recent private attempts, group analytics (heatmap, weak topics, mastery distribution), and 10-minute edit / invalidation.
+- Mockups still missing: auth polish, review queue, group admin, recent private attempts, group analytics (heatmap, weak topics, mastery distribution), and 10-minute edit / invalidation UI.
 - Standings mockup score tooltip contradicts the brief (point sum vs weekly score out of 100).
 - Search and notifications still go nowhere. `my_study_groups.html` is leftover and not in nav.
 - GitHub CLI on this machine had an invalid token for `nathanbehailuz`; terminal auth still needs `gh auth login` if pushing.
 - Git commit identity is still the old global name/email unless changed to `nathanbehailuz` / `nz2212@nyu.edu`.
-- Syllabus tables empty until P4. Invite redeem, unlock/review/score, and edit-window enforcement are P3. Email confirmation settings are dashboard-managed (disable for local smoke if needed; re-enable before production / P6).
-- Advisors still WARN that authenticated can call intentional SECURITY DEFINER RPCs (`invalidate_attempt`, `attempt_invalidation_meta_for_admin`); anon execute was revoked.
+- Syllabus empty until P4. No dashboard UI for domain RPCs until P5. Realtime leaderboards are P6.
+- Advisors may WARN on intentional SECURITY DEFINER RPCs callable by authenticated; anon execute revoked.
+- 2026-09-19: Signup copy assumes email confirmation is required; `signUp` passes `emailRedirectTo` to the app origin. Supabase Dashboard must allowlist that URL or the confirm link fails / expires oddly.
+- 2026-09-19: Trimmed auth shell copy (no P2/smoke/Supabase status line; no timezone on signed-in view).
 
 ## Time spent
 
 - Product definition / brief: majority of current work.
 - Mockup review → `docs/design.md`, then a visual pass to mute color, copy, and type.
-- Implementation: P0 foundations + P1 schema + P2 auth/RLS.
+- Implementation: P0–P3 (foundations, schema, auth/RLS, domain RPCs).

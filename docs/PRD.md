@@ -163,6 +163,8 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 - Automated tests (or SQL fixtures) prove unlock, review block, attribution, and weekly score math
 - Invalidated attempts stop affecting progress, reviews, scores, and streaks
 
+**P3 status (2026-09-19):** Done. Domain RPCs live in `supabase/migrations/20260919210000_domain_core.sql` (+ follow-up fixes). Profile timezone drives day/week boundaries. Fixtures: `supabase/tests/p3_domain.sql` (unlock, review block, attribution, score, invalidate). Full NeetCode seed and UI remain P4/P5.
+
 ---
 
 ## P4 Demo data
@@ -308,7 +310,7 @@ RLS is the default enforcement. Domain functions must re-check role and membersh
 
 Resolve these in writing (brief update or build-log decision) before locking UI:
 
-1. **Timezone source of truth** — profile timezone vs browser vs group default for streak day boundaries.
+1. **Timezone source of truth** — **Resolved (P3):** `profiles.timezone` (ISO week Monday in that zone) for streaks and weekly snapshots.
 2. **Search and notifications** — remain chrome-only for MVP, or get a minimal P5.1 pass after core screens.
 3. **Public discovery ranking** — how public groups are ordered in browse (member count, pace, recency).
 4. **Milestone feed shape** — which events are reaction-eligible (first independent solve, streak milestones, weekly rank change).

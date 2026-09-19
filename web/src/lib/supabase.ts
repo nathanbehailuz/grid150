@@ -7,8 +7,19 @@ export const isSupabaseConfigured = Boolean(url && anonKey)
 
 /** Browser client. Null when env vars are missing so the shell still boots. */
 export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(url!, anonKey!)
+  ? createClient(url!, anonKey!, {
+      auth: {
+        detectSessionInUrl: true,
+        persistSession: true,
+        flowType: 'pkce',
+      },
+    })
   : null
+
+/** Where confirmation / magic links should return after Auth. */
+export function authRedirectTo(): string {
+  return `${window.location.origin}/`
+}
 
 if (!isSupabaseConfigured && import.meta.env.DEV) {
   console.warn(
