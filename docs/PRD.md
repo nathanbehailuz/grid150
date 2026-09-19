@@ -135,6 +135,8 @@ Indexes for membership lookups, due reviews, weekly snapshots by group/week, and
 - Member A cannot read member B’s private reflection
 - Owner/admin can perform admin-only mutations; members cannot
 
+**P2 status (2026-09-19):** Done. Migrations `20260919200000_auth_rls.sql`, `20260919200001_auth_rls_revoke_anon.sql`, `20260919200002_fix_groups_select_creator.sql` applied to remote `grid150`. Profile-on-signup trigger, group bootstrap (owner membership + pace settings), `app_private` helpers, RLS on all public tables, owner-only `attempts`, admin `invalidate_attempt` / meta RPCs (anon execute revoked). Thin email/password UI in `web/`. Domain unlock/score/invite redeem remain P3.
+
 ---
 
 ## P3 Domain logic

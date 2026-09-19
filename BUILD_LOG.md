@@ -18,6 +18,7 @@
 - 2026-09-19: Removed the sidebar "Pages" label. Nav items sit under the progress card.
 - 2026-09-19: Wrote `docs/PRD.md` as the implementation roadmap (P0–P6). Product rules stay in the brief; build order and brief/mockup gaps live in the PRD.
 - 2026-09-19: Shipped P1 empty data contract (enums + tables + indexes + RLS on, no policies/seed/domain logic).
+- 2026-09-19: Shipped P2 auth/RLS (profile trigger, membership helpers, policies, thin email/password smoke UI).
 
 ## Stack & tooling
 
@@ -25,6 +26,7 @@
 - 2026-09-19: Completed **P0 Foundations**. Vite React+TS app in `web/`, remote Supabase project `grid150` (`gvtprsfkvhdwbfvwynog`), local `supabase/` init, env template, Vitest smoke test, README.
 - App connects via `web/.env.local` anon URL/key from the dashboard. Remote is linked for CLI `db push`.
 - 2026-09-19: Completed **P1 Schema**. Single migration `supabase/migrations/20260919190000_init_schema.sql` (enums, 16 tables, FKs, indexes, RLS enabled with no policies). Applied to remote via `npx supabase db push --linked`.
+- 2026-09-19: Completed **P2 Auth / authz**. Migrations `20260919200000_auth_rls.sql` (+ revoke-anon + groups creator SELECT fix). Email/password smoke UI in `web/`.
 
 ## Key decisions & trade-offs
 
@@ -42,11 +44,15 @@
 - Decision: P1 enables RLS on every table with zero policies so anon/authenticated stay locked until P2; service role can still seed later (alternative considered: delaying RLS until policies land).
 - Decision: `profiles.focused_group_id` is added after `groups` exists to avoid a circular create-order FK problem.
 - Decision: `problem_difficulty` and `join_request_status` are enums in SQL even though the plan table glance listed some as free text — keeps syllabus and join flows constrained at the DB layer.
+- Decision: P2 helpers and admin RPCs live under `app_private` / narrow public wrappers; attempts stay owner-only SELECT so private reflections never leak via RLS (alternative considered: column grants, which cannot vary by user).
+- Decision: admin invalidate uses `public.invalidate_attempt` SECURITY DEFINER returning only id/timestamps — not a full attempt row.
+- Decision: groups SELECT includes `created_by = auth.uid()` because INSERT RETURNING evaluates SELECT before the AFTER bootstrap trigger adds owner membership.
 
 ## Hard parts / dead ends
 
 - Today’s review modal used both `hidden` and `flex`, so the overlay sat on top of the page and ate clicks. Removed the conflicting `flex` until the modal is opened.
 - P0: Vite 8 / Vitest 4 from `create-vite` failed to load rolldown native bindings on Node 22.9. Pinned Vite 5.4 + Vitest 2.1 instead.
+- P2: first groups INSERT under RLS failed until SELECT allowed the creator — RETURNING runs before the owner-membership AFTER trigger.
 
 ## How I verified it works
 
@@ -64,18 +70,20 @@
 - Reloaded Today after dropping the Pages label.
 - P0 exit checks: `npm run typecheck`, `npm test`, and `npm run build` succeed in `web/`. Remote project `grid150` is ACTIVE_HEALTHY; `.env.local` has URL + anon key. `npx oxlint .` is clean.
 - P1 exit checks: `npx supabase db push --linked` applied `20260919190000_init_schema.sql`. `list_tables` shows 16 public tables, all `rls_enabled: true`, 0 rows. Smoke: insert topic `arrays` + problem `two-sum` at `global_order = 1`, then delete both; counts back to 0.
+- P2 exit checks: auth_rls (+ revoke + groups SELECT fix) applied. SQL smoke: signup trigger creates profile; anon sees 0 profiles/attempts; Bob cannot read Alice attempts or update her group; Alice owner can update group. `anon` cannot execute `invalidate_attempt`. `web/` typecheck, test, and build pass with auth form.
 
 ## Known limitations
 
-- Mockups still missing: auth, review queue, group admin, recent private attempts, group analytics (heatmap, weak topics, mastery distribution), and 10-minute edit / invalidation.
+- Mockups still missing: auth polish, review queue, group admin, recent private attempts, group analytics (heatmap, weak topics, mastery distribution), and 10-minute edit / invalidation.
 - Standings mockup score tooltip contradicts the brief (point sum vs weekly score out of 100).
 - Search and notifications still go nowhere. `my_study_groups.html` is leftover and not in nav.
 - GitHub CLI on this machine had an invalid token for `nathanbehailuz`; terminal auth still needs `gh auth login` if pushing.
 - Git commit identity is still the old global name/email unless changed to `nathanbehailuz` / `nz2212@nyu.edu`.
-- P1 tables are empty (no NeetCode seed). No RLS policies yet — clients cannot read/write until P2. No signup profile trigger or domain functions (P2/P3).
+- Syllabus tables empty until P4. Invite redeem, unlock/review/score, and edit-window enforcement are P3. Email confirmation settings are dashboard-managed (disable for local smoke if needed; re-enable before production / P6).
+- Advisors still WARN that authenticated can call intentional SECURITY DEFINER RPCs (`invalidate_attempt`, `attempt_invalidation_meta_for_admin`); anon execute was revoked.
 
 ## Time spent
 
 - Product definition / brief: majority of current work.
 - Mockup review → `docs/design.md`, then a visual pass to mute color, copy, and type.
-- Implementation: P0 foundations + P1 schema migration and remote apply.
+- Implementation: P0 foundations + P1 schema + P2 auth/RLS.

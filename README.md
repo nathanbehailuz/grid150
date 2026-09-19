@@ -18,7 +18,7 @@ Competitive accountability dashboard for groups finishing the NeetCode 150. Hono
 | `mockups/` | Static HTML mockups (UI reference until P5) |
 | `docs/` | Brief, design, PRD |
 
-## Web app (P0)
+## Web app
 
 ```bash
 cd web
@@ -27,6 +27,10 @@ cp .env.example .env.local   # if you do not already have .env.local
 # Fill VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (publishable/anon only)
 npm run dev
 ```
+
+P2 ships a minimal email/password signup and login shell (not the full dashboard). After signup, a `profiles` row is created by a database trigger.
+
+**Auth dashboard note:** Email provider must be enabled on the Supabase project. For local smoke you may turn off “Confirm email”; re-enable before production (P6).
 
 Other scripts:
 
@@ -57,7 +61,7 @@ VITE_SUPABASE_ANON_KEY=<anon or publishable key from dashboard>
 npx supabase link --project-ref gvtprsfkvhdwbfvwynog
 ```
 
-Local `supabase start` needs Docker and is optional for P0. Migrations begin in P1.
+Local `supabase start` needs Docker and is optional. Schema is in `supabase/migrations/` (P1+); push with `npx supabase db push --linked`.
 
 ## Mockups
 

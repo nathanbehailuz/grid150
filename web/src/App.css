@@ -1,5 +1,5 @@
 .shell {
-  max-width: 40rem;
+  max-width: 28rem;
   margin: 0 auto;
   padding: 3rem 1.5rem;
   font-family: system-ui, sans-serif;
@@ -16,25 +16,114 @@
   color: #e6e8ee;
 }
 
+.shell h2 {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  color: #e6e8ee;
+}
+
 .lede {
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.25rem;
   line-height: 1.5;
   color: #8a909a;
 }
 
-.links {
-  margin: 0 0 1.5rem;
-  padding-left: 1.25rem;
-  line-height: 1.7;
-}
-
-.links code {
-  font-size: 0.875rem;
-  color: #93ad9e;
-}
-
 .status {
-  margin: 0;
+  margin: 0 0 1.5rem;
   font-size: 0.875rem;
   color: #8a909a;
+}
+
+.panel {
+  border: 1px solid #2a2e38;
+  padding: 1.25rem;
+  background: #181b22;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tabs button {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #2a2e38;
+  color: #8a909a;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  border-color: #93ad9e;
+  color: #e6e8ee;
+}
+
+form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: #8a909a;
+}
+
+input {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #2a2e38;
+  background: #12141a;
+  color: #e6e8ee;
+  font: inherit;
+}
+
+button[type='submit'],
+.panel > button {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #93ad9e;
+  background: #243028;
+  color: #e6e8ee;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.message {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #c4b48a;
+  line-height: 1.4;
+}
+
+.meta {
+  margin: 0 0 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.meta div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.meta dt {
+  font-size: 0.75rem;
+  color: #8a909a;
+}
+
+.meta dd {
+  margin: 0;
+  color: #e6e8ee;
+}
+
+code {
+  font-size: 0.875rem;
+  color: #93ad9e;
 }
