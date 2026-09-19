@@ -1,0 +1,14 @@
+---
+description: Always keep BUILD_LOG.md current after meaningful work
+alwaysApply: true
+---
+
+# Build Log
+
+Update `BUILD_LOG.md` in the same turn as any meaningful change: product decisions, implementation, docs, verification, dead ends, or scope cuts.
+
+- Follow the existing section structure. Add dated bullets; do not wipe prior entries.
+- Log the **why**, not a file dump. Include alternatives considered when a decision forked.
+- Record what was tested, what was not, and known limitations.
+- If a change is too small for a new decision, still add a one-line note under the relevant section.
+- Never finish a task with an outdated build log.

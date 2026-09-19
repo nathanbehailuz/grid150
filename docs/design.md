@@ -2,7 +2,18 @@
 
 Feature inventory derived from `mockups/`. This document describes **what each screen does**, not how it looks.
 
-The mockup is a logged-in app with four primary pages, shared chrome, and one attempt-logging overlay. There is no auth, settings, review-queue, or group-admin screen in the mockup.
+## Page files
+
+| File | Nav label | Product brief screen |
+| --- | --- | --- |
+| `mockups/personal_dashboard.html` | Today | Personal Dashboard |
+| `mockups/neetcode_150_syllabus.html` | Roadmap | Syllabus |
+| `mockups/group_standings.html` | Leaderboard | Group Dashboard (standings only) |
+| `mockups/join_or_create_group.html` | Create or join | Join with code or create a group |
+| `mockups/log_attempt.html` | (from Today / Log) | Honor-based attempt log |
+| `mockups/index.html` | - | Redirects to Today |
+
+Sidebar Today / Roadmap / Leaderboard, Groups dropdown, Log attempt, and Create or join now go to these files. There is no auth, settings, review-queue, or group-admin screen. `my_study_groups.html` is leftover and not in nav.
 
 ---
 
@@ -12,22 +23,24 @@ Present on every page.
 
 **Sidebar**
 
-- App home / brand
-- Primary navigation: Today, Roadmap, Leaderboard, Groups
-- Global NeetCode 150 completion (count and percent)
+- Logo and Grid150 name (home)
+- Global NeetCode 150 completion (count and percent, independent vs assisted)
+- Primary navigation: Today, Roadmap, Leaderboard
+- Leaderboard accessory is the member's rank in the **focused group**
+- Groups is a dropdown of current memberships; choosing one opens that group's standings and sets it as focused
+- Create or join at the bottom of the Groups dropdown
 - Profile switcher: display name and how many groups the user belongs to
 
 **Top bar**
 
-- Current page title
 - Search (affordance only; no search screen in the mockup)
 - Notifications (affordance only; no notification screen in the mockup)
-- Log attempt — opens the attempt dialog for the next unlocked new problem
+- Log attempt — opens the honor-based log screen
 
 **Mobile**
 
 - Bottom nav: Today, Roadmap, Leaderboard, Groups
-- Center log-attempt action (same new-problem dialog)
+- Center log-attempt action (same log screen)
 
 ---
 
@@ -38,32 +51,27 @@ Personal dashboard for the current day and current week. This is the home screen
 **Status**
 
 - Date and greeting
-- Current week number and this week’s score out of 100
-- Review-required blocker when a scheduled review is due: problem name, why it is due, and a Start review action
-- Start review opens the attempt dialog in scheduled-review mode
-- While a required review is outstanding, the next new problem stays locked
+- Current week number
 
-**Personal metrics**
+**Questions today**
+
+- Next new problem and any reviews due now
+- Each row opens the log screen, scrolled to that question
+- New problems stay locked on the log screen until the due review is saved
+
+**Personal summary (left half)**
 
 - Daily new-problem target vs completed today
-- Remaining new problems needed to hit today’s target
-- Current streak in days, plus personal-best streak
-- Weekly score vs last week
-- Rank in the currently focused group, including rank movement
+- Current streak and personal-best streak
+- Weekly score vs last week, with independent vs hint-assisted counts
+- Rank in the focused group, including movement and gap to first
 
-**Practice calendar**
+**Practice calendar (right half)**
 
 - Month view of practice history
 - Month navigation
 - Each day shows how many questions were completed
 - Day states: practiced, missed active day, rest day, today, future
-- Selecting a day shows:
-  - Date
-  - Total questions completed
-  - New problems vs reviews
-  - That day’s plan / target
-  - Result: plan met, partial, missed, or rest day
-- Streak explanation tied to the last missed active day
 
 **This week**
 
@@ -74,20 +82,6 @@ Personal dashboard for the current day and current week. This is the home screen
   - Improvement vs recent baseline
 - Daily chart of independent vs hint-assisted solves
 - Link to the Leaderboard page
-
-**Up next**
-
-- Next unlocked NeetCode problem
-- Difficulty
-- Topic and progress within that topic
-- Locked state when a review is blocking new-problem logging
-
-**Current group snapshot**
-
-- Mini leaderboard for the focused group (top members this week)
-- Each row: rank, name, independent-solve count, weekly score
-- Current user highlighted
-- Link to the full Leaderboard page
 
 ---
 
@@ -117,11 +111,7 @@ Each topic shows:
 - Hint-assisted solve count
 - Review pass rate
 
-**Mastery definition**
-
-- Mastery is independent solves plus successful scheduled reviews, not completion alone
-
-The mockup lists topics but does not include a per-problem drill-down screen.
+The mockup lists topics but does not include a per-problem drill-down screen. Mastery still appears as a per-topic percent; the definition banner is gone.
 
 ---
 
@@ -153,67 +143,42 @@ Each member row includes:
 - Streak in days and targets met this period
 - Improvement indicator (up, down, or flat)
 - Score
-- Preset reaction on other members (count can be incremented)
-- Current user highlighted; the current user has no self-reaction control
+- Current user highlighted
 
 **Other**
 
 - Score details affordance (no details panel in the mockup)
-- Opening a group from the Groups page lands here
+- Opening a group from the Groups dropdown lands here
 
 ---
 
 ## Groups
 
-List of groups the user belongs to, plus entry points to create or join.
+Memberships live in the sidebar dropdown, not a list page. `my_study_groups.html` is leftover.
 
-**Group list**
+Each dropdown row includes:
 
-Each group card includes:
+- Group name
+- User's rank in that group
+- Opens that group's Leaderboard and sets it as focused
 
-- Name
-- Visibility: public or private
-- Member count
-- User’s role: owner, admin, or member
-- User’s rank in that group
-- Average weekly score
-- Current pace marker: topic and week
-- Pace progress
-- Open group — goes to that group’s Leaderboard
+**Create or join** (`join_or_create_group.html`)
 
-**Actions**
+- Join: enter a 6-character invite code
+- Create: enter a group name and receive a generated invite code
+- The joined or created group becomes the focused group
 
-- Create group (affordance only; no create flow in the mockup)
-- Find a group: browse public groups or join with an invite code (affordance only; no discovery/join flow in the mockup)
-
-The mockup does not include group settings, member management, invite management, or join-request approval.
+The mockup does not include group settings, member management, invite management, public discovery, or join-request approval.
 
 ---
 
-## Log attempt overlay
+## Log attempt
 
-Shared dialog for both new problems and scheduled reviews. Opened from the top bar, mobile log button, or Start review on Today.
+Honor-based logging for today's questions (`log_attempt.html`).
 
-**Context**
-
-- Mode: New problem or Scheduled review
-- Problem title (next unlocked problem, or the due review)
-
-**Fields**
-
-- Outcome:
-  - Couldn’t solve
-  - Solved with hint
-  - Independent
-- Time spent, in minutes
-- Confidence, 1–5
-- Could explain out loud (yes/no; this affects the next review date)
-- Optional private reflection
-
-**Result**
-
-- Cancel or save
-- Saving confirms that progress and scores were updated
+- Review form: outcome, time, confidence 1-5, could explain, optional private reflection
+- New-problem form: same fields, locked until the due review is saved
+- Header Log attempt and Questions today both open this page
 
 The mockup does not include editing, deleting, or invalidating an attempt after save.
 
@@ -221,12 +186,48 @@ The mockup does not include editing, deleting, or invalidating an attempt after 
 
 ## What exists only as chrome, not as a page
 
-These controls appear in the mockup but have no dedicated screen:
+These controls appear but have no dedicated screen:
 
 - Search
 - Notifications
 - Profile / account menu
-- Create group
-- Find / join a group
-- Leaderboard score-details panel
-- Topic problem list inside Roadmap
+
+---
+
+## Gaps vs `docs/PRODUCT_BRIEF.md`
+
+Missing **screens** from the brief:
+
+- Authentication and profiles
+- Dedicated **Review Queue** (overdue first, reason, previous outcome, next review date)
+- **Group Management** (visibility, open vs approval join, invite codes, members/roles, pace/schedule, attempt invalidation)
+- Public-group discovery
+- Attempt correction (10-minute member edit/delete, admin invalidation, audit log)
+
+Missing **Personal Dashboard** pieces:
+
+- Recent private attempts
+- Calendar day detail (new vs review vs plan result). The calendar shows counts and rest/missed, but selecting a day does not open that breakdown.
+
+Missing **Syllabus** pieces:
+
+- Logging a new problem from the roadmap (the aside CTA is “Execute LRU Cache Review,” not an attempt form)
+- Locked / available / completed / review-due states are shown at topic level; per-problem logging still is not a flow
+
+Missing **Group Dashboard** analytics from the brief:
+
+- Active practice days
+- Weekly pace marker as a syllabus range (standings show problems/week and a deadline only)
+- Member progress comparison beyond the table
+- Independent-solve trend
+- Consistency heatmap
+- Topic mastery distribution
+- Group-wide weak topics
+- Recent milestones with preset reactions (not in the standings mockup)
+
+**Conflicts** (mockup shows something the brief rejects):
+
+- Standings “Score Metric Matrix” uses accumulated points (independent +10, review +8, hint +4, streak +2/day). The brief’s weekly score is out of 100: Progress 50 + Consistency 25 + Improvement 25. All-time is average weekly score, not a point sum.
+- Groups copy on leftover `my_study_groups.html` may still mention live discussions. The brief has no chat, comments, or shared solutions.
+
+Honor-based logging and create/join by invite code are now mockup pages. Calendar day selection and a working weekly/all-time score switch are still not implemented.

@@ -136,6 +136,10 @@ attempt.completed_at >= group_membership.joined_at
 - Attempts never count retroactively for groups joined later.
 - A solve can count in several groups when the member belonged to all of them at that time.
 - Scores, streaks, targets, rankings, and progress views remain group-specific.
+- Each member has one **focused group** at a time: the last group they opened, or their earliest membership if they have never opened a group this session.
+- The sidebar Leaderboard rank is the member's rank in the focused group, not a global rank across groups.
+- The Groups control lists every membership. Choosing a group sets it as focused and opens that group's standings.
+- Create or join is a separate screen: join with an invite code, or create a group by name and receive a generated invite code. The new or joined group becomes focused.
 - Leaving a group does not erase historical standings or activity.
 - Rejoining does not make activity completed during the absence eligible.
 - Reviews remain connected only to groups eligible for the qualifying attempt.
@@ -232,14 +236,11 @@ Owners and admins can see only the metadata needed to invalidate suspicious or a
 
 ### Personal Dashboard
 
-- Today's new-problem target and completion
-- Next unlocked NeetCode problem
-- Blocking reviews due now
-- Current streak
-- Weekly score and component breakdown
-- NeetCode 150 completion and topic mastery
-- Recent private attempts
-- Group cards showing rank and score
+- Questions today: the next new problem and any reviews due now; opening one goes to the log screen
+- Combined personal summary: daily new-problem target, streak, weekly score, and focused-group rank
+- Practice calendar
+- Weekly score component breakdown
+- NeetCode 150 completion in the sidebar
 
 ### Syllabus
 
@@ -266,6 +267,12 @@ Owners and admins can see only the metadata needed to invalidate suspicious or a
 - Topic mastery distribution
 - Group-wide weak topics
 - Recent milestones with preset reactions
+
+### Join or Create Group
+
+- Join with an invite code
+- Create a group by name and receive a generated invite code
+- The new or joined group becomes the focused group
 
 ### Group Management
 
