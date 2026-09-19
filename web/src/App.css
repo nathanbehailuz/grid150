@@ -1,0 +1,40 @@
+.shell {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  font-family: system-ui, sans-serif;
+  color: #c4c8d0;
+  background: #12141a;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.shell h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  color: #e6e8ee;
+}
+
+.lede {
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+  color: #8a909a;
+}
+
+.links {
+  margin: 0 0 1.5rem;
+  padding-left: 1.25rem;
+  line-height: 1.7;
+}
+
+.links code {
+  font-size: 0.875rem;
+  color: #93ad9e;
+}
+
+.status {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #8a909a;
+}

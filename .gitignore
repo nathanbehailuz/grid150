@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+web/node_modules/
+
+# Builds
+dist/
+web/dist/
+*.local
+
+# Env (never commit secrets)
+.env
+.env.*
+!.env.example
+web/.env
+web/.env.*
+!web/.env.example
+
+# Logs / OS
+*.log
+.DS_Store
+
+# Editors / tooling
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# Coverage / caches
+coverage/
+.turbo/
+*.tsbuildinfo
