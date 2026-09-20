@@ -1,0 +1,31 @@
+:root {
+  --color-bg: #12141a;
+  --color-surface: #12141a;
+  --color-surface-low: #171a20;
+  --color-surface-container: #1c1f26;
+  --color-surface-high: #23272f;
+  --color-surface-highest: #2b3038;
+  --color-on-surface: #c4c8d0;
+  --color-on-surface-variant: #8a909a;
+  --color-primary: #7d9a88;
+  --color-primary-fixed: #93ad9e;
+  --color-primary-container: #2a3a32;
+  --color-on-primary-container: #c5d6cc;
+  --color-secondary: #8d93a0;
+  --color-secondary-container: #2a2e38;
+  --color-tertiary: #a89478;
+  --color-tertiary-container: #3a3428;
+  --color-outline: #6b717a;
+  --color-outline-variant: #3a3f48;
+  --color-error: #c17b76;
+  --color-error-container: #4a2c2a;
+  --color-bright: #e6e8ee;
+
+  --font-sans: 'Geist', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius: 0.25rem;
+  --radius-lg: 0.5rem;
+  --sidebar-width: 17.5rem;
+  --header-height: 3.5rem;
+}

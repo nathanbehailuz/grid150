@@ -193,6 +193,14 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 
 **Depends on:** P4 (can scaffold routes earlier; ship wired screens here).
 
+**P5 status (2026-09-19):** Done for this pass (demo-complete app in `web/`). React Router + AppShell chrome, auth gate, Today / Roadmap / Reviews / Log / Leaderboard / Join-Create / Profile wired to P3 RPCs and seeded data. Search and notifications remain inert chrome.
+
+**P5 mockup parity (2026-09-20):** Today calendar + week breakdown (CSS bars), Log dual review/new panels with lock, Roadmap overview/filters/mastery/current-topic panel, Leaderboard Your Standing + richer columns, Groups dropdown ranks. Chart library still deferred with P5.1 analytics.
+
+**P5.1 phase 1 (2026-09-20):** Group manage (`/groups/manage`) + recent attempts edit/delete (`/attempts`) + invite create/revoke RPCs.
+
+**P5.1b (2026-09-20):** Leaderboard **Standings | Analytics** (pace marker, CSS heatmap, Recharts mastery/weak/indep, milestone feed + `add_reaction`); Discover (`/groups/discover` + `list_public_groups` / `request_join_group`); Manage pace marker fields; `group_recent_activity` RPC.
+
 **Defaults**
 
 - Standings table stays reaction-free (current mockup). Reactions live on a milestone / activity feed per brief Social Layer.
@@ -200,31 +208,32 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 
 **Deliverables (from mockups first)**
 
-| Screen | Source |
-| --- | --- |
-| Shared chrome (logo, nav, Groups dropdown, focused rank, Log attempt) | All mockups |
-| Today | `personal_dashboard.html` |
-| Roadmap | `neetcode_150_syllabus.html` |
-| Log attempt | `log_attempt.html` |
-| Leaderboard (week / all-time) | `group_standings.html` |
-| Join or create group | `join_or_create_group.html` |
+| Screen | Source | Status |
+| --- | --- | --- |
+| Shared chrome (logo, nav, Groups dropdown, focused rank, Log attempt) | All mockups | Done |
+| Today | `personal_dashboard.html` | Done (calendar + week breakdown) |
+| Roadmap | `neetcode_150_syllabus.html` | Done |
+| Log attempt | `log_attempt.html` | Done (dual review/new panels) |
+| Leaderboard (week / all-time) | `group_standings.html` | Done (Your Standing + table) |
+| Join or create group | `join_or_create_group.html` | Done |
 
-**Deliverables (brief gaps; mockups missing)**
+**Deliverables (brief gaps)**
 
-| Screen | Notes |
-| --- | --- |
-| Auth / profiles | Signup, login, display name, timezone |
-| Review queue | Overdue first; reason; previous outcome; log review |
-| Group management | Visibility, open vs approval, invites, members/roles, pace, invalidation |
-| Attempt correction UI | 10-minute edit/delete; admin invalidate |
-| Group analytics beyond table | Pace marker, heatmap, weak topics, mastery distribution, milestones + reactions |
-| Public discovery | Browse/search public groups (join-by-code already covered) |
+| Screen | Notes | Status |
+| --- | --- | --- |
+| Auth / profiles | Signup, login, display name, timezone | Done |
+| Review queue | Overdue first; open Log as scheduled review | Done (reason / previous outcome polish deferred) |
+| Group management | Visibility, open vs approval, invites, members/roles, pace, invalidation | **P5.1 phase 1 done** (`/groups/manage`) |
+| Attempt correction UI | 10-minute edit/delete; admin invalidate | **P5.1 phase 1 done** (`/attempts` + manage invalidate) |
+| Group analytics beyond table | Pace marker, heatmap, weak topics, mastery, milestones + reactions | **P5.1b done** (Leaderboard Analytics) |
+| Public discovery | Browse/search public groups (join-by-code covered) | **P5.1b done** (`/groups/discover`) |
+| Chart library | Recharts for analytics panels | **P5.1b done** (Today CSS bars unchanged) |
 
 **Exit criteria**
 
-- Brief success criteria can be walked through in the UI against seed data
+- Brief success criteria can be walked through in the UI against seed data (Alex demo path)
 - Private fields never appear in group views
-- Responsive layout usable on laptop and phone widths
+- Responsive layout usable on laptop and phone widths (~375px drawer + bottom nav)
 
 ---
 
@@ -251,16 +260,16 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 
 ### Primary screens
 
-| Brief screen | Phase | Mockup today |
-| --- | --- | --- |
-| Personal Dashboard | P5 | Yes (`personal_dashboard.html`) |
-| Syllabus | P5 | Yes (`neetcode_150_syllabus.html`) |
-| Review Queue | P5 | Missing |
-| Group Dashboard (standings + analytics) | P5 | Standings only |
-| Join or Create Group | P5 | Yes (`join_or_create_group.html`) |
-| Group Management | P5 | Missing |
-| Auth / profiles | P2 + P5 | Missing |
-| Honor-based log | P3 + P5 | Yes (`log_attempt.html`) |
+| Brief screen | Phase | Mockup today | App (P5) |
+| --- | --- | --- | --- |
+| Personal Dashboard | P5 | Yes (`personal_dashboard.html`) | Done |
+| Syllabus | P5 | Yes (`neetcode_150_syllabus.html`) | Done |
+| Review Queue | P5 | Missing mockup | Done (`/reviews`) |
+| Group Dashboard (standings + analytics) | P5 / P5.1b | Standings only | **Done** (Standings + Analytics) |
+| Join or Create Group | P5 | Yes (`join_or_create_group.html`) | Done (+ Discover P5.1b) |
+| Group Management | P5.1 | Missing | Phase 1 + pace marker (P5.1b) |
+| Auth / profiles | P2 + P5 | Missing mockup | Done |
+| Honor-based log | P3 + P5 | Yes (`log_attempt.html`) | Done |
 
 ### Backend responsibilities
 
@@ -279,15 +288,15 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 | Edit window and invalidation audit | P3 |
 | Realtime leaderboard / activity | P3 + P6 |
 
-### Mockup gaps vs brief (tracked for P5)
+### Mockup gaps vs brief (tracked for P5 / P5.1)
 
-- Auth and profiles
-- Dedicated review queue
-- Group management (visibility, invites, roles, pace, invalidation)
-- Attempt correction UI
-- Group analytics beyond the standings table
-- Public discovery and join-approval UX (join-by-code exists)
-- Preset reactions: keep in MVP; attach to milestones/activity, not the standings table
+- Auth and profiles — **done in app (P5)**
+- Dedicated review queue — **done in app (P5)**
+- Group management (visibility, invites, roles, pace, invalidation) — **P5.1 phase 1 done**
+- Attempt correction (10-minute edit/delete, admin invalidate) — **P5.1 phase 1 done**
+- Group analytics (heatmap, weak topics, mastery distribution, milestones + reactions) — **P5.1b done**
+- Public discovery and join-approval UX (join-by-code exists) — **P5.1b done** (`/groups/discover`)
+- Preset reactions: keep in MVP; attach to milestones/activity, not the standings table — **P5.1b done**
 
 ---
 
@@ -308,14 +317,12 @@ RLS is the default enforcement. Domain functions must re-check role and membersh
 
 ---
 
-## Open decisions before P5
-
-Resolve these in writing (brief update or build-log decision) before locking UI:
+## Open decisions (post-P5)
 
 1. **Timezone source of truth** — **Resolved (P3):** `profiles.timezone` (ISO week Monday in that zone) for streaks and weekly snapshots.
-2. **Search and notifications** — remain chrome-only for MVP, or get a minimal P5.1 pass after core screens.
-3. **Public discovery ranking** — how public groups are ordered in browse (member count, pace, recency).
-4. **Milestone feed shape** — which events are reaction-eligible (first independent solve, streak milestones, weekly rank change).
+2. **Search and notifications** — remain chrome-only for MVP (**P5 choice**); optional minimal pass later.
+3. **Public discovery ranking** — **Resolved (P5.1b):** active member count desc, then `created_at` desc; name `ilike` filter.
+4. **Milestone feed shape** — **Resolved (P5.1b):** successful solves (+ first-indep flag), week #1 banner, self streak chips (7/14/30); reactions on attempt `activity` ids.
 
 ---
 

@@ -21,6 +21,10 @@
 - 2026-09-19: Shipped P2 auth/RLS (profile trigger, membership helpers, policies, thin email/password smoke UI).
 - 2026-09-19: Shipped P3 domain RPCs (unlock/review/attribution/scores/invites/edit window) with SQL fixtures.
 - 2026-09-19: Shipped P4 demo data (NeetCode 150 syllabus migration + FAANG Grind Club seed).
+- 2026-09-19: Shipped P5 frontend (router, AppShell, core screens wired to RPCs; P5.1 deferred for admin/analytics/correction).
+- 2026-09-20: Mockup parity pass — Today calendar/week bars, Log dual panels, Roadmap mastery/current topic, Leaderboard Your Standing, Groups ranks; still no chart library / P5.1.
+- 2026-09-20: Shipped **P5.1 phase 1** (group admin UI + attempt correction); analytics/discovery/charts still deferred.
+- 2026-09-20: Shipped **P5.1b** — group analytics (Recharts + CSS heatmap), milestone feed reactions, public discovery browse, pace marker edit.
 
 ## Stack & tooling
 
@@ -31,6 +35,10 @@
 - 2026-09-19: Completed **P2 Auth / authz**. Migrations `20260919200000_auth_rls.sql` (+ revoke-anon + groups creator SELECT fix). Email/password smoke UI in `web/`.
 - 2026-09-19: Completed **P3 Domain logic**. Migrations `20260919210000_domain_core.sql` (+ create_group / progress cast / invalidate ambiguity fixes). Fixtures in `supabase/tests/p3_domain.sql`.
 - 2026-09-19: Completed **P4 Demo data**. Syllabus migration `20260919220000_neetcode150_syllabus.sql` (150 problems / 18 topics from `supabase/seeds/neetcode150.json`). Demo cohort in `supabase/seed.sql` (invite `FAANG1`, password `Grid150Demo!`).
+- 2026-09-19: Completed **P5 Frontend**. `react-router-dom`, design tokens (sage/charcoal, Geist + JetBrains Mono), `AppShell` chrome, pages Today / Roadmap / Reviews / Log / Leaderboard / Join-Create / Profile. Data via tables + `log_attempt`, `next_unlocked_problem`, `current_streak`, `set_focused_group`, `create_group`, `join_group_by_code`.
+- 2026-09-20: **Mockup parity** on those screens (helpers in `web/src/lib/dates|practice|standings.ts`; CSS calendar/bars). Metrics derived client-side from attempts + snapshots + `group_pace_settings` (no new migrations).
+- 2026-09-20: **P5.1 phase 1**. Migration `20260920100000_group_invite_rpcs.sql` (`create_group_invite`, `revoke_group_invite`). Pages `/groups/manage`, `/attempts`. Wired to existing `edit_attempt` / `delete_attempt` / `invalidate_attempt` / `attempt_invalidation_meta_for_admin` / `resolve_join_request` / `set_daily_target`.
+- 2026-09-20: **P5.1b**. Migration `20260920110000_p51b_activity_discovery.sql` (`group_recent_activity`, `list_public_groups`). `recharts` on Leaderboard Analytics; Discover at `/groups/discover`; Manage pace marker fields.
 
 ## Key decisions & trade-offs
 
@@ -55,6 +63,12 @@
 - Decision: P3 enforces rules in Postgres SECURITY DEFINER RPCs (not Edge Functions); clients call `log_attempt`, `create_group`, `join_group_by_code`, etc.
 - Decision: weekly Progress uses weighted solves (1.0 indep / 0.6 hint) vs `daily_target * active_days`, capped at 120% before scaling to 50; Improvement is neutral 12.5 on the first week.
 - Decision: P4 keeps the NeetCode 150 list as a permanent migration; demo users/groups live in `seed.sql` so curriculum survives without replaying demo accounts.
+- Decision: P5 ships a demo-complete React app against seed data and defers group admin, analytics charts, attempt-correction UI, and public discovery browse to **P5.1** (alternative considered: blocking P5 until every brief gap screen exists).
+- Decision: P5 visual language follows muted mockup palette (not a purple-gradient rebuild); standings stay reaction-free; search/notifications stay inert.
+- Decision: Mockup parity uses CSS/SVG bars and client aggregates instead of adding a chart library (library waits for P5.1 analytics).
+- Decision: Split P5.1 — ship admin + attempt correction first (backend already existed); defer analytics/charts/discovery to P5.1b (alternative considered: one mega pass).
+- Decision: P5.1b uses **Recharts** for mastery/weak/indep charts; consistency heatmap stays a CSS grid (denser). Attempts stay owner-only, so peer feed is via `group_recent_activity` SECURITY DEFINER (non-private columns only).
+- Decision: Public discovery ranks by **active member count desc**, then `created_at desc`; name search is `ilike`. Reactions target attempt ids as `activity` (standings stay reaction-free). Streak milestone chips are self-only via `current_streak`.
 
 ## Hard parts / dead ends
 
@@ -82,10 +96,15 @@
 - P2 exit checks: auth_rls (+ revoke + groups SELECT fix) applied. SQL smoke: signup trigger creates profile; anon sees 0 profiles/attempts; Bob cannot read Alice attempts or update her group; Alice owner can update group. `anon` cannot execute `invalidate_attempt`. `web/` typecheck, test, and build pass with auth form.
 - P3 exit checks: domain migrations applied. `supabase/tests/p3_domain.sql` proves unlock, fail-does-not-unlock, overdue review block, no retroactive attribution, dual-group attribution, weekly snapshot + neutral improvement, invalidate clears completion + writes audit.
 - P4 exit checks: 150 problems / 18 topics; Alex 68 completed; weekly standings Marcus > Alex; invite `FAANG1`; Alex `next_unlocked` = 69 with overdue review blocking `log_attempt`.
+- P5 exit checks: `web/` `typecheck`, `test` (AppShell smoke), `build`, and `oxlint` pass. Routes cover auth + core screens; Leaderboard omits private reflection/confidence; responsive drawer/bottom nav for ~375px.
+- 2026-09-19: Fixed Today stuck “Loading…” — unstable `onRefreshChrome` / `refreshProfile` identities were retriggering fetches in a loop.
+- 2026-09-20: Mockup parity `typecheck` / `test` / `build` green after calendar, dual log, roadmap panel, and leaderboard standing card.
+- 2026-09-20: P5.1 phase 1 applied invite RPCs via Supabase MCP `apply_migration` (CLI `db push` blocked on local telemetry EPERM); web typecheck/test/build/oxlint.
+- 2026-09-20: P5.1b applied activity/discovery RPCs via MCP; web typecheck/test/build/oxlint after Analytics + Discover.
 
 ## Known limitations
 
-- Mockups still missing: auth polish, review queue, group admin, recent private attempts, group analytics (heatmap, weak topics, mastery distribution), and 10-minute edit / invalidation UI.
+- Mockups still missing some polish screens; React app covers admin, attempts, analytics, and discovery (P5.1 / P5.1b).
 - Standings mockup score tooltip contradicts the brief (point sum vs weekly score out of 100).
 - Search and notifications still go nowhere. `my_study_groups.html` is leftover and not in nav.
 - GitHub CLI on this machine had an invalid token for `nathanbehailuz`; terminal auth still needs `gh auth login` if pushing.
@@ -94,9 +113,11 @@
 - Advisors may WARN on intentional SECURITY DEFINER RPCs callable by authenticated; anon execute revoked.
 - 2026-09-19: Signup copy assumes email confirmation is required; `signUp` passes `emailRedirectTo` to the app origin. Supabase Dashboard must allowlist that URL or the confirm link fails / expires oddly.
 - 2026-09-19: Trimmed auth shell copy (no P2/smoke/Supabase status line; no timezone on signed-in view).
+- 2026-09-20 **P5.1b done.** Still deferred: P6 Realtime; richer notification/search; peer streak milestones without a streak RPC.
+- 2026-09-19: Dashboard UI is now P5; demo walkthrough remains login as `alex@grid150.demo` / `Grid150Demo!`.
 
 ## Time spent
 
 - Product definition / brief: majority of current work.
 - Mockup review → `docs/design.md`, then a visual pass to mute color, copy, and type.
-- Implementation: P0–P4 (foundations through demo seed).
+- Implementation: P0–P5 (foundations through wired frontend).

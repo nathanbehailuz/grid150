@@ -12,5 +12,19 @@ body,
 }
 
 body {
-  background: #12141a;
+  background: var(--color-bg, #12141a);
+  color: var(--color-on-surface, #c4c8d0);
+  font-family: var(--font-sans, 'Geist', sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-primary-fixed, #93ad9e);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }

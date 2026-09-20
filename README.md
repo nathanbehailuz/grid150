@@ -15,7 +15,7 @@ Competitive accountability dashboard for groups finishing the NeetCode 150. Hono
 | --- | --- |
 | `web/` | React + TypeScript app (Vite) |
 | `supabase/` | CLI config, migrations, `seed.sql`, NeetCode JSON |
-| `mockups/` | Static HTML mockups (UI reference until P5) |
+| `mockups/` | Static HTML mockups (visual reference) |
 | `docs/` | Brief, design, PRD |
 
 ## Demo accounts (P4)
@@ -43,7 +43,7 @@ cp .env.example .env.local   # if you do not already have .env.local
 npm run dev
 ```
 
-P2 ships a minimal email/password signup and login shell (not the full dashboard). After signup, a `profiles` row is created by a database trigger.
+P5 ships the routed dashboard (Today, Roadmap, Reviews, Log, Leaderboard, Join/Create, Profile) behind the auth gate. Demo path: log in as Alex → Today overdue block → clear reviews → Leaderboard (Marcus #1) → Join with `FAANG1` or create on a new account.
 
 **Auth dashboard notes**
 
@@ -83,4 +83,4 @@ Local `supabase start` needs Docker and is optional. Schema is in `supabase/migr
 
 ## Mockups
 
-Open `mockups/index.html` (or any page under `mockups/`) via a static server until the React app replaces them in P5.
+Static HTML under `mockups/` remains a visual reference. The live app is `web/` (`npm run dev`).
