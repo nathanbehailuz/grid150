@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { EmptyState } from '../components/EmptyState'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
 import { formatShortDate, isOverdue } from '../lib/dates'
 import type { Profile, ReviewTask } from '../lib/types'
@@ -56,16 +59,25 @@ export function ReviewsPage({ profile, userId }: Props) {
   }, [load])
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <h1>Review queue</h1>
         <p>Overdue first. Log each as a scheduled review.</p>
       </header>
-      {error ? <p className="message error">{error}</p> : null}
-      {loading ? <p className="muted">Loading…</p> : null}
+      {error ? (
+        <StatusBanner tone="error" message={error} onRetry={() => void load()} />
+      ) : null}
+      {loading && reviews.length === 0 ? (
+        <PageSkeleton rows={4} label="Loading reviews" />
+      ) : null}
       <section className="panel">
         {reviews.length === 0 && !loading ? (
-          <p className="muted">No pending reviews.</p>
+          <EmptyState
+            title="No pending reviews"
+            hint="Clear overdue reviews here after you log weak solves. Open Log to record a scheduled review."
+            actionLabel="Open log"
+            actionTo="/log"
+          />
         ) : (
           <div className="row-list">
             {reviews.map((r) => {

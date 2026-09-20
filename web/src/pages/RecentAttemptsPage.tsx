@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { EmptyState } from '../components/EmptyState'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
 import { formatShortDate, outcomeLabel } from '../lib/dates'
 import type { AttemptOutcome, Profile } from '../lib/types'
@@ -145,6 +148,9 @@ export function RecentAttemptsPage({ profile, userId }: Props) {
   async function onDelete(id: string) {
     if (!supabase) return
     if (!window.confirm('Delete this attempt? This cannot be undone.')) return
+    const previous = rows
+    setRows((cur) => cur.filter((r) => r.id !== id))
+    if (editingId === id) setEditingId(null)
     setBusy(true)
     setError(null)
     setMessage(null)
@@ -154,9 +160,8 @@ export function RecentAttemptsPage({ profile, userId }: Props) {
       })
       if (rpcErr) throw rpcErr
       setMessage('Attempt deleted.')
-      if (editingId === id) setEditingId(null)
-      await load()
     } catch (err) {
+      setRows(previous)
       setError(err instanceof Error ? err.message : 'Delete failed')
     } finally {
       setBusy(false)
@@ -164,7 +169,7 @@ export function RecentAttemptsPage({ profile, userId }: Props) {
   }
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <h1>Recent attempts</h1>
         <p>
@@ -173,15 +178,22 @@ export function RecentAttemptsPage({ profile, userId }: Props) {
         </p>
       </header>
 
-      {loading ? <p className="muted">Loading…</p> : null}
-      {error ? <p className="message error">{error}</p> : null}
-      {message ? <p className="message ok">{message}</p> : null}
+      {loading && rows.length === 0 ? (
+        <PageSkeleton rows={4} label="Loading attempts" />
+      ) : null}
+      {error ? (
+        <StatusBanner tone="error" message={error} onRetry={() => void load()} />
+      ) : null}
+      {message ? <StatusBanner tone="ok" message={message} /> : null}
 
       <div className="row-list">
         {rows.length === 0 && !loading ? (
-          <p className="muted">
-            No attempts yet. <Link to="/log">Log one</Link>.
-          </p>
+          <EmptyState
+            title="No attempts yet"
+            hint="Log a new problem or scheduled review to start your history."
+            actionLabel="Log attempt"
+            actionTo="/log"
+          />
         ) : null}
         {rows.map((row) => {
           const left = remainingMs(row.completed_at)

@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { EmptyState } from '../components/EmptyState'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
+import { useGroupRealtime } from '../hooks/useGroupRealtime'
 import { supabase } from '../lib/supabase'
 import { formatShortDate } from '../lib/dates'
 import type { Membership, Profile } from '../lib/types'
@@ -60,6 +64,8 @@ export function GroupManagePage({
 }: Props) {
   const isAdmin =
     focusedRole === 'owner' || focusedRole === 'admin'
+  const isOwner = focusedRole === 'owner'
+  const navigate = useNavigate()
 
   const [name, setName] = useState(focusedGroupName ?? '')
   const [visibility, setVisibility] = useState<'private' | 'public'>('private')
@@ -75,6 +81,7 @@ export function GroupManagePage({
   const [topics, setTopics] = useState<{ id: string; name: string }[]>([])
   const [defaultDaily, setDefaultDaily] = useState('1')
   const [invalidateRows, setInvalidateRows] = useState<InvalidateRow[]>([])
+  const [deleteConfirm, setDeleteConfirm] = useState('')
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -266,6 +273,10 @@ export function GroupManagePage({
     void load()
   }, [load])
 
+  useGroupRealtime(focusedGroupId, () => {
+    void load()
+  })
+
   async function run(action: () => Promise<void>, ok: string) {
     setBusy(true)
     setError(null)
@@ -284,20 +295,37 @@ export function GroupManagePage({
 
   if (!focusedGroupId) {
     return (
-      <div className="stack">
+      <div className="stack page-enter">
         <header className="page-head">
           <h1>Manage group</h1>
           <p>Focus a group first.</p>
         </header>
-        <p className="muted">
-          <Link to="/groups/join">Create or join</Link>
-        </p>
+        <EmptyState
+          title="No focused group"
+          hint="Create a group or join with an invite code, then open Manage."
+          actionLabel="Create or join"
+          actionTo="/groups/join"
+        />
+      </div>
+    )
+  }
+
+  if (loading && !isAdmin && members.length === 0) {
+    return (
+      <div className="stack page-enter">
+        <header className="page-head">
+          <h1>Manage group</h1>
+          <p>
+            {focusedGroupName} · {focusedRole ?? 'member'}
+          </p>
+        </header>
+        <PageSkeleton rows={3} label="Loading group" />
       </div>
     )
   }
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <h1>Manage group</h1>
         <p>
@@ -305,9 +333,17 @@ export function GroupManagePage({
         </p>
       </header>
 
-      {loading ? <p className="muted">Loading…</p> : null}
-      {error ? <p className="message error">{error}</p> : null}
-      {message ? <p className="message ok">{message}</p> : null}
+      {loading && isAdmin && members.length === 0 ? (
+        <PageSkeleton rows={5} label="Loading group" />
+      ) : null}
+      {error ? (
+        <StatusBanner
+          tone="error"
+          message={error}
+          onRetry={() => void load()}
+        />
+      ) : null}
+      {message ? <StatusBanner tone="ok" message={message} /> : null}
 
       {!isAdmin ? (
         <section className="panel">
@@ -794,6 +830,60 @@ export function GroupManagePage({
               </table>
             </div>
           </section>
+
+          {isOwner ? (
+            <section className="panel danger-zone">
+              <h2>Delete group</h2>
+              <p className="muted">
+                Permanently removes this group, memberships, invites, and
+                standings. Attempts stay on each member’s personal history.
+              </p>
+              <label>
+                Type the group name to confirm
+                <input
+                  value={deleteConfirm}
+                  onChange={(e) => setDeleteConfirm(e.target.value)}
+                  placeholder={focusedGroupName ?? name}
+                  autoComplete="off"
+                />
+              </label>
+              <button
+                type="button"
+                className="btn danger"
+                disabled={
+                  busy ||
+                  deleteConfirm.trim() !== (focusedGroupName ?? name).trim()
+                }
+                onClick={() =>
+                  void (async () => {
+                    if (!supabase || !focusedGroupId) return
+                    setBusy(true)
+                    setError(null)
+                    setMessage(null)
+                    try {
+                      const { error: rpcErr } = await supabase.rpc(
+                        'delete_group',
+                        { p_group_id: focusedGroupId },
+                      )
+                      if (rpcErr) throw rpcErr
+                      await onRefresh()
+                      navigate('/groups/join', { replace: true })
+                    } catch (err) {
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : 'Delete group failed',
+                      )
+                    } finally {
+                      setBusy(false)
+                    }
+                  })()
+                }
+              >
+                {busy ? 'Deleting…' : 'Delete group'}
+              </button>
+            </section>
+          ) : null}
         </>
       ) : null}
 

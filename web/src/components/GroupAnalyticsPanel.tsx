@@ -10,6 +10,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { PageSkeleton } from './PageSkeleton'
+import { StatusBanner } from './StatusBanner'
+import { useGroupRealtime } from '../hooks/useGroupRealtime'
 import { supabase } from '../lib/supabase'
 import {
   formatShortDate,
@@ -347,6 +350,10 @@ export function GroupAnalyticsPanel({
     void load()
   }, [load])
 
+  useGroupRealtime(focusedGroupId, () => {
+    void load()
+  })
+
   const dayLabels = useMemo(() => {
     const today = localDateInTz(profile.timezone)
     const labels: string[] = []
@@ -364,6 +371,19 @@ export function GroupAnalyticsPanel({
     setBusyId(attemptId + kind)
     setMessage(null)
     setError(null)
+    const previous = feed
+    setFeed((cur) =>
+      cur.map((item) => {
+        if (item.attempt_id !== attemptId) return item
+        return {
+          ...item,
+          reactions: {
+            ...item.reactions,
+            [kind]: (item.reactions[kind] ?? 0) + 1,
+          },
+        }
+      }),
+    )
     try {
       const { error: rpcErr } = await supabase.rpc('add_reaction', {
         p_kind: kind,
@@ -372,8 +392,8 @@ export function GroupAnalyticsPanel({
       })
       if (rpcErr) throw rpcErr
       setMessage('Reaction added.')
-      await load()
     } catch (err) {
+      setFeed(previous)
       setError(err instanceof Error ? err.message : 'Reaction failed')
     } finally {
       setBusyId(null)
@@ -382,12 +402,16 @@ export function GroupAnalyticsPanel({
 
   const maxHeat = Math.max(1, ...heatmap.flatMap((r) => r.cells))
 
-  if (loading) return <p className="muted">Loading analytics…</p>
+  if (loading && feed.length === 0 && masteryBars.length === 0) {
+    return <PageSkeleton rows={4} label="Loading analytics" />
+  }
 
   return (
     <div className="stack">
-      {error ? <p className="message error">{error}</p> : null}
-      {message ? <p className="message ok">{message}</p> : null}
+      {error ? (
+        <StatusBanner tone="error" message={error} onRetry={() => void load()} />
+      ) : null}
+      {message ? <StatusBanner tone="ok" message={message} /> : null}
 
       <section className="panel">
         <h2>Pace marker</h2>

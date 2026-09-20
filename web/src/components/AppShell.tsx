@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import type { Profile } from '../lib/types'
 import type { useFocusedGroup } from '../hooks/useFocusedGroup'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import './AppShell.css'
 
 type Focused = ReturnType<typeof useFocusedGroup>
@@ -10,6 +11,7 @@ type Props = {
   profile: Profile
   email: string | undefined
   focused: Focused
+  profileError?: string | null
   onSignOut: () => void
   children: ReactNode
 }
@@ -25,6 +27,7 @@ export function AppShell({
   profile,
   email,
   focused,
+  profileError,
   onSignOut,
   children,
 }: Props) {
@@ -36,6 +39,7 @@ export function AppShell({
   const menuId = useId()
   const profileMenuId = useId()
   const navigate = useNavigate()
+  const online = useOnlineStatus()
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
@@ -154,7 +158,12 @@ export function AppShell({
           {groupsOpen ? (
             <div id={menuId} className="groups-dropdown" role="menu">
               {focused.memberships.length === 0 ? (
-                <p className="groups-empty">No groups yet</p>
+                <p className="groups-empty">
+                  No groups yet.{' '}
+                  <Link to="/groups/join" onClick={() => setGroupsOpen(false)}>
+                    Create or join
+                  </Link>
+                </p>
               ) : (
                 focused.memberships.map((m) => (
                   <button
@@ -298,6 +307,16 @@ export function AppShell({
             </Link>
           </div>
         </header>
+        {!online ? (
+          <div className="shell-banner shell-banner-warn" role="status">
+            You are offline. Changes will fail until the connection returns.
+          </div>
+        ) : null}
+        {profileError ? (
+          <div className="shell-banner shell-banner-error" role="alert">
+            Session profile error: {profileError}. Try signing out and back in.
+          </div>
+        ) : null}
         <main className="shell-content">{children}</main>
       </div>
 

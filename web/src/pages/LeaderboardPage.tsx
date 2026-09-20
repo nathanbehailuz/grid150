@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { EmptyState } from '../components/EmptyState'
 import { GroupAnalyticsPanel } from '../components/GroupAnalyticsPanel'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
+import { useGroupRealtime } from '../hooks/useGroupRealtime'
 import { supabase } from '../lib/supabase'
 import {
   isoWeekNumber,
@@ -293,6 +296,10 @@ export function LeaderboardPage({
     void load()
   }, [load])
 
+  useGroupRealtime(focusedGroupId, () => {
+    void load()
+  })
+
   async function scheduleNextWeekTarget() {
     if (!supabase || !focusedGroupId) return
     setTargetBusy(true)
@@ -324,20 +331,23 @@ export function LeaderboardPage({
 
   if (!focusedGroupId) {
     return (
-      <div className="stack">
+      <div className="stack page-enter">
         <header className="page-head">
           <h1>Leaderboard</h1>
           <p>Join a group to see standings.</p>
         </header>
-        <p className="muted">
-          <Link to="/groups/join">Create or join a group</Link>
-        </p>
+        <EmptyState
+          title="No focused group"
+          hint="Discover a public cohort or create your own to unlock standings and analytics."
+          actionLabel="Discover groups"
+          actionTo="/groups/discover"
+        />
       </div>
     )
   }
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <p className="muted" style={{ marginBottom: '0.35rem' }}>
           Week {weekNum}
@@ -418,8 +428,12 @@ export function LeaderboardPage({
         </button>
       </div>
 
-      {error ? <p className="message error">{error}</p> : null}
-      {loading ? <p className="muted">Loading…</p> : null}
+      {error ? (
+        <StatusBanner tone="error" message={error} onRetry={() => void load()} />
+      ) : null}
+      {loading && rows.length === 0 ? (
+        <PageSkeleton rows={5} label="Loading standings" />
+      ) : null}
 
       <section className="panel">
         <span className="muted" style={{ fontSize: '0.6875rem' }}>

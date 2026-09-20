@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
 import { isOverdue } from '../lib/dates'
 import type { Problem, ProblemProgress, Topic } from '../lib/types'
@@ -253,7 +255,7 @@ export function RoadmapPage({ userId }: Props) {
   )
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <h1>Roadmap</h1>
         <p>
@@ -261,8 +263,12 @@ export function RoadmapPage({ userId }: Props) {
         </p>
       </header>
 
-      {error ? <p className="message error">{error}</p> : null}
-      {loading ? <p className="muted">Loading…</p> : null}
+      {error ? (
+        <StatusBanner tone="error" message={error} onRetry={() => void load()} />
+      ) : null}
+      {loading && topics.length === 0 ? (
+        <PageSkeleton rows={6} label="Loading roadmap" />
+      ) : null}
 
       <div className="overview-strip">
         <div className="stat">

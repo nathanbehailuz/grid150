@@ -2,55 +2,47 @@
 
 Competitive accountability dashboard for groups finishing the NeetCode 150. Honor-based logging, scheduled reviews, and group leaderboards — not a LeetCode sync or chat app.
 
+**Live app:** [https://grid150.vercel.app/](https://grid150.vercel.app/)
+
+## Quick start for reviewers
+
+1. Open the live app and log in with a demo account (email confirmation is on for new signups; use these instead).
+2. Walk Today → overdue reviews → Leaderboard → Manage / Discover.
+
+| Email | Password | Role in demo |
+| --- | --- | --- |
+| `alex@grid150.demo` | `Grid150Demo!` | Primary walkthrough; FAANG owner; overdue reviews; 68/150 |
+| `marcus@grid150.demo` | `Grid150Demo!` | FAANG admin; weekly #1 |
+
+Invite code: `FAANG1` (also `WEEKND`, `CAMPUS`, `SPRNT1`, `NYU150`). Full demo roster is in the seed notes below.
+
 ## Docs
 
+- [Data model](docs/DATA_MODEL.md) — schema, ERD, RPCs, RLS proof, how to stand up the backend
 - [Product brief](docs/PRODUCT_BRIEF.md) — product rules
-- [Design / feature map](docs/design.md) — what each mockup screen does
-- [Implementation PRD](docs/PRD.md) — build order (P0–P6)
-- [Build log](BUILD_LOG.md) — decisions and verification notes
+- [Implementation PRD](docs/PRD.md) — build order
+- [Build log](BUILD_LOG.md) — decisions and verification
+- [Design / feature map](docs/design.md) — mockup inventory
 
 ## Repo layout
 
 | Path | Purpose |
 | --- | --- |
 | `web/` | React + TypeScript app (Vite) |
-| `supabase/` | CLI config, migrations, `seed.sql`, NeetCode JSON |
-| `mockups/` | Static HTML mockups (visual reference) |
-| `docs/` | Brief, design, PRD |
+| `supabase/` | Migrations, `seed.sql`, NeetCode JSON |
+| `docs/` | Brief, PRD, data model |
 
-## Demo accounts (P4)
+## Local run
 
-After migrations + seed (`npx supabase db query --linked -f supabase/seed.sql`):
-
-| Email | Name | Notes |
-| --- | --- | --- |
-| `alex@grid150.demo` | Alex Rivera | Primary; 68/150; focused FAANG Grind Club; overdue review |
-| `marcus@grid150.demo` | Marcus Vance | Weekly #1 |
-| `jordan@grid150.demo` | Jordan Lee | Peer |
-| `sam@grid150.demo` | Sam Ortiz | Peer |
-| `riley@grid150.demo` | Riley Chen | Peer |
-
-Password for all: `Grid150Demo!`  
-Invite code: `FAANG1`
-
-## Web app
+Requires **Node ≥ 20.19**.
 
 ```bash
 cd web
 npm install
-cp .env.example .env.local   # if you do not already have .env.local
-# Fill VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (publishable/anon only)
+cp .env.example .env.local
+# Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY (anon / publishable only)
 npm run dev
 ```
-
-P5 ships the routed dashboard (Today, Roadmap, Reviews, Log, Leaderboard, Join/Create, Profile) behind the auth gate. Demo path: log in as Alex → Today overdue block → clear reviews → Leaderboard (Marcus #1) → Join with `FAANG1` or create on a new account.
-
-**Auth dashboard notes**
-
-- Email provider enabled; confirmation is on for this project.
-- Under **Authentication → URL configuration**, set **Site URL** to `http://localhost:5173` (or your deployed origin) and add the same origin to **Redirect URLs** (e.g. `http://localhost:5173/**`). Confirmation links use `emailRedirectTo` from the app and must match an allowlisted URL.
-
-Other scripts:
 
 ```bash
 npm run typecheck
@@ -59,43 +51,37 @@ npm run build
 npm run lint
 ```
 
-## Deploy (Vercel)
+Production is already deployed at [grid150.vercel.app](https://grid150.vercel.app/) (`web/` as Vercel root, SPA rewrite in `web/vercel.json`). After any Auth URL change, allowlist that origin in Supabase **Authentication → URL configuration**.
 
-App root is `web/` (Vite). SPA fallback is in `web/vercel.json`.
+## Backend
 
-```bash
-cd web
-npx vercel login
-npx vercel link   # Root Directory: web (if linking from monorepo root, set Root Directory to web)
-npx vercel env add VITE_SUPABASE_URL production
-npx vercel env add VITE_SUPABASE_ANON_KEY production
-npx vercel --prod
-```
-
-Or from the dashboard: import `nathanbehailuz/grid150`, set **Root Directory** to `web`, add the two `VITE_*` env vars, deploy.
-
-After deploy, add the Vercel origin to Supabase **Authentication → URL configuration** (Site URL + Redirect URLs).
-
-### Env
-
-Requires **Node ≥ 20.19** (or ≥ 22.12). This repo pins **Vite 5** so Node 22.9 still works.
-
-Remote project: `grid150` (`gvtprsfkvhdwbfvwynog`, region `us-east-1`).
-
-```bash
-VITE_SUPABASE_URL=https://gvtprsfkvhdwbfvwynog.supabase.co
-VITE_SUPABASE_ANON_KEY=<anon or publishable key from dashboard>
-```
-
-### Supabase CLI
+Supabase project `grid150` (`gvtprsfkvhdwbfvwynog`). Grid150 tables live under `public` alongside an unrelated `alba_*` schema from another app — seed and migrations never touch those.
 
 ```bash
 # From repo root (after supabase login once)
 npx supabase link --project-ref gvtprsfkvhdwbfvwynog
+npx supabase db push --linked
+npx supabase db query --linked -f supabase/seed.sql
 ```
 
-Local `supabase start` needs Docker and is optional. Schema is in `supabase/migrations/` (P1+); push with `npx supabase db push --linked`. Re-seed demos with `npx supabase db query --linked -f supabase/seed.sql` (`config.toml` already points `[db.seed]` at `./seed.sql` for local `db reset`).
+Local Docker (`supabase start`) is optional. See [docs/DATA_MODEL.md](docs/DATA_MODEL.md) for the full schema and RLS walkthrough.
 
-## Mockups
+### Demo seed accounts
 
-Static HTML under `mockups/` remains a visual reference. The live app is `web/` (`npm run dev`).
+Password for all: `Grid150Demo!`
+
+| Email | Name | Notes |
+| --- | --- | --- |
+| `alex@grid150.demo` | Alex Rivera | FAANG owner; 68/150; overdue reviews |
+| `marcus@grid150.demo` | Marcus Vance | FAANG admin; weekly #1 |
+| `priya@grid150.demo` | Priya Nair | FAANG #3; Campus Algorithms |
+| `jordan@grid150.demo` | Jordan Lee | FAANG + Weekend; owns NYU Grind |
+| `sam@grid150.demo` | Sam Ortiz | FAANG; NYU Grind |
+| `devon@grid150.demo` | Devon Walsh | FAANG + Campus |
+| `casey@grid150.demo` | Casey Kim | FAANG + Weekend |
+| `riley@grid150.demo` | Riley Chen | Late FAANG joiner |
+| `taylor@grid150.demo` | Taylor Brooks | Newest FAANG member |
+| `elena@grid150.demo` | Elena Vasquez | Owns Campus Algorithms |
+| `noah@grid150.demo` | Noah Patel | Owns Interview Sprint 2026 |
+| `mina@grid150.demo` | Mina Park | Pending FAANG join request |
+| `chris@grid150.demo` | Chris Okonkwo | Pending FAANG join request |

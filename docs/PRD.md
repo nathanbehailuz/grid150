@@ -187,6 +187,10 @@ Enforce brief rules in Postgres functions and/or Edge Functions. Client must not
 
 **P4 status (2026-09-19):** Done. Syllabus in `supabase/migrations/20260919220000_neetcode150_syllabus.sql` (source `supabase/seeds/neetcode150.json`). Demo cohort in `supabase/seed.sql`: Alex Rivera 68/150, FAANG Grind Club, Marcus #1 / Alex #2 this week, overdue review blocks new problems, invite `FAANG1`. Demo password `Grid150Demo!` (`*@grid150.demo`).
 
+**P4 seed expansion (2026-09-20):** 13 demo users, 5 groups (FAANG private/approval plus four public), mixed attempt outcomes/reviews/reflections, 8-week snapshots, reactions, pending join requests, extra invites, pace markers. Remote `public.alba_*` tables belong to another project and are not touched.
+
+**Submission polish (2026-09-20):** Live URL documented; `docs/DATA_MODEL.md`; owner `delete_group`; Realtime on snapshots/join requests/reactions; skeletons / empty / offline; optimistic delete + reactions; CI workflow.
+
 ---
 
 ## P5 Frontend

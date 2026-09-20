@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
 import { formatShortDate, isOverdue, outcomeLabel } from '../lib/dates'
 import type { AttemptOutcome, Problem } from '../lib/types'
@@ -115,6 +117,7 @@ export function LogAttemptPage() {
   const { profile, user } = useSession()
   const [params] = useSearchParams()
   const location = useLocation()
+  const navigate = useNavigate()
   const problemParam = params.get('problem')
   const reviewRef = useRef<HTMLElement>(null)
   const newRef = useRef<HTMLElement>(null)
@@ -303,10 +306,8 @@ export function LogAttemptPage() {
         p_private_reflection: fields.reflection.trim() || null,
       })
       if (rpcErr) throw rpcErr
-      setMessage(
-        'Attempt saved. You can edit or delete it for 10 minutes on Recent attempts.',
-      )
-      await load()
+      setMessage('Attempt saved.')
+      navigate('/attempts', { replace: false })
     } catch (err) {
       const raw = err instanceof Error ? err.message : 'Log failed'
       const friendly = /overdue review/i.test(raw)
@@ -351,15 +352,17 @@ export function LogAttemptPage() {
     reviews.find((r) => r.id === activeReviewId) ?? reviews[0] ?? null
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <h1>Log attempt</h1>
         <p>Honor-based self-report. Private notes stay private.</p>
       </header>
 
-      {loading ? <p className="muted">Loading…</p> : null}
-      {error ? <p className="message error">{error}</p> : null}
-      {message ? <p className="message ok">{message}</p> : null}
+      {loading && !nextProblem && reviews.length === 0 ? (
+        <PageSkeleton rows={4} label="Loading log" />
+      ) : null}
+      {error ? <StatusBanner tone="error" message={error} /> : null}
+      {message ? <StatusBanner tone="ok" message={message} /> : null}
 
       <div className="dual-log">
         <section

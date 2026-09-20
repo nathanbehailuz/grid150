@@ -68,7 +68,8 @@
 - Decision: Mockup parity uses CSS/SVG bars and client aggregates instead of adding a chart library (library waits for P5.1 analytics).
 - Decision: Split P5.1 — ship admin + attempt correction first (backend already existed); defer analytics/charts/discovery to P5.1b (alternative considered: one mega pass).
 - Decision: Personal daily targets edit on **Leaderboard → Your Standing** for the focused group; `set_daily_target` always queues `pending_*` for next ISO week (this week unchanged). Create-group sets `default_daily_new_target` for new joiners.
-- Decision: Public discovery ranks by **active member count desc**, then `created_at desc`; name search is `ilike`. Reactions target attempt ids as `activity` (standings stay reaction-free). Streak milestone chips are self-only via `current_streak`.
+- Decision: P5.1b done. Still deferred: richer notification/search; peer streak milestones without a streak RPC. Realtime added for snapshots/join requests/reactions (not attempts).
+- Decision: Owner group delete uses `delete_group` RPC that clears attributions first — raw `groups` DELETE fails on `attempt_group_attributions.membership_id` RESTRICT.
 
 ## Hard parts / dead ends
 
@@ -96,6 +97,8 @@
 - P2 exit checks: auth_rls (+ revoke + groups SELECT fix) applied. SQL smoke: signup trigger creates profile; anon sees 0 profiles/attempts; Bob cannot read Alice attempts or update her group; Alice owner can update group. `anon` cannot execute `invalidate_attempt`. `web/` typecheck, test, and build pass with auth form.
 - P3 exit checks: domain migrations applied. `supabase/tests/p3_domain.sql` proves unlock, fail-does-not-unlock, overdue review block, no retroactive attribution, dual-group attribution, weekly snapshot + neutral improvement, invalidate clears completion + writes audit.
 - P4 exit checks: 150 problems / 18 topics; Alex 68 completed; weekly standings Marcus > Alex; invite `FAANG1`; Alex `next_unlocked` = 69 with overdue review blocking `log_attempt`.
+- 2026-09-20: Re-seeded linked `grid150` with the expanded cohort (13 users, 5 groups, 645 attempts, 138 weekly snapshots). Confirmed `public.alba_*` row counts unchanged (9 customers, 9 leads, 10 communications, 16 processing log). FAANG this week still Marcus 83 / Alex 71. Did not `db reset` or migrate Alba.
+- 2026-09-20: Submission polish verified with `web/` typecheck, 9 Vitest tests, production build (CSS minify warning fixed by restoring broken `.discover-search` rule). Migration `delete_group_realtime` applied via MCP. Browser: local login as Alex → Today / Leaderboard / Manage delete confirm / Discover.
 - P5 exit checks: `web/` `typecheck`, `test` (AppShell smoke), `build`, and `oxlint` pass. Routes cover auth + core screens; Leaderboard omits private reflection/confidence; responsive drawer/bottom nav for ~375px.
 - 2026-09-19: Fixed Today stuck “Loading…” — unstable `onRefreshChrome` / `refreshProfile` identities were retriggering fetches in a loop.
 - 2026-09-20: Mockup parity `typecheck` / `test` / `build` green after calendar, dual log, roadmap panel, and leaderboard standing card.
@@ -106,6 +109,8 @@
 - 2026-09-20: Moved personal daily target to Leaderboard Your Standing; Schedule queues `pending_*` for next week only (not sidebar).
 - 2026-09-20: Header nav — Discover + Create/join; removed inert Search/Alerts; Groups dropdown is memberships (+ Manage) only.
 - 2026-09-20: Added `web/vercel.json` SPA rewrite for Vercel deploy (`web/` as root, Vite `dist`).
+- 2026-09-20: Expanded P4 demo seed so Today, Reviews, Analytics, Discover, and Manage are not empty. Left co-hosted `public.alba_*` tables untouched (same remote DB, other project).
+- 2026-09-20: Submission polish — live URL `https://grid150.vercel.app/` in README; `docs/DATA_MODEL.md` (ERD, RPCs, RLS proof); owner `delete_group` RPC (attributions cleared first because membership FK is RESTRICT); Realtime on `weekly_score_snapshots` / `group_join_requests` / `reactions` (not attempts); skeletons + empty/error/offline banners; optimistic attempt delete + reactions; GitHub Actions CI for `web/`.
 
 ## Known limitations
 
@@ -114,15 +119,16 @@
 - Search and notifications still go nowhere. `my_study_groups.html` is leftover and not in nav.
 - GitHub CLI on this machine had an invalid token for `nathanbehailuz`; terminal auth still needs `gh auth login` if pushing.
 - Git commit identity is still the old global name/email unless changed to `nathanbehailuz` / `nz2212@nyu.edu`.
-- No dashboard UI until P5. Demo weekly totals are narrative-adjusted after recompute so Marcus stays #1 / Alex #2 for demos.
+- Demo weekly totals are narrative-adjusted after recompute so Marcus stays #1 / Alex #2 for demos.
+- Remote project `grid150` co-hosts another app’s `public.alba_*` tables. Grid150 seed/migrations must not drop, alter, or write those tables.
 - Advisors may WARN on intentional SECURITY DEFINER RPCs callable by authenticated; anon execute revoked.
 - 2026-09-19: Signup copy assumes email confirmation is required; `signUp` passes `emailRedirectTo` to the app origin. Supabase Dashboard must allowlist that URL or the confirm link fails / expires oddly.
 - 2026-09-19: Trimmed auth shell copy (no P2/smoke/Supabase status line; no timezone on signed-in view).
-- 2026-09-20 **P5.1b done.** Still deferred: P6 Realtime; richer notification/search; peer streak milestones without a streak RPC.
+- 2026-09-20: Realtime covers standings/join requests/reactions; peer attempt streams deferred (owner-only SELECT). Production Vercel may need a redeploy for the latest polish commit.
 - 2026-09-19: Dashboard UI is now P5; demo walkthrough remains login as `alex@grid150.demo` / `Grid150Demo!`.
 
 ## Time spent
 
 - Product definition / brief: majority of current work.
 - Mockup review → `docs/design.md`, then a visual pass to mute color, copy, and type.
-- Implementation: P0–P5 (foundations through wired frontend).
+- Implementation: P0–P5 (foundations through wired frontend) plus submission polish (docs, delete group, UX states, realtime, CI).

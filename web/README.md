@@ -2,6 +2,8 @@
 
 React + TypeScript + Vite app for the Grid150 dashboard.
 
+**Production:** [https://grid150.vercel.app/](https://grid150.vercel.app/)
+
 ## Setup
 
 ```bash
@@ -14,9 +16,9 @@ npm run dev
 ## Scripts
 
 - `npm run dev` — local Vite server
-- `npm run typecheck` / `npm test` / `npm run build` — CI gates
+- `npm run typecheck` / `npm test` / `npm run build` — CI gates (also `.github/workflows/web.yml`)
 - `npm run lint` — oxlint
 
 ## Demo
 
-Sign in as `alex@grid150.demo` / `Grid150Demo!` after seeding. Walk Today → overdue reviews → Leaderboard → Join with `FAANG1` (already a member) or create a group on a fresh account.
+Sign in as `alex@grid150.demo` / `Grid150Demo!` after seeding. Walk Today → overdue reviews → Leaderboard → Join with `FAANG1` (already a member) or create a group on a fresh account. Reviewers should use demo accounts (email confirmation is on for new signups).

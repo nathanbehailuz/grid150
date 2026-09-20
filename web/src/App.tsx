@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
+import { PageSkeleton } from './components/PageSkeleton'
 import { useFocusedGroup } from './hooks/useFocusedGroup'
 import { useSession } from './hooks/useSession'
 import { AuthPage } from './pages/AuthPage'
@@ -20,6 +21,7 @@ export default function App() {
     user,
     profile,
     loading,
+    profileError,
     refreshProfile,
     updateProfile,
     signOut,
@@ -34,7 +36,9 @@ export default function App() {
   if (loading) {
     return (
       <div className="auth-shell">
-        <p className="muted">Loading…</p>
+        <div className="auth-card" style={{ width: 'min(28rem, 100%)' }}>
+          <PageSkeleton rows={3} label="Starting session" />
+        </div>
       </div>
     )
   }
@@ -54,6 +58,7 @@ export default function App() {
       profile={profile}
       email={user.email}
       focused={focused}
+      profileError={profileError}
       onSignOut={() => void signOut()}
     >
       <Routes>
@@ -61,10 +66,10 @@ export default function App() {
           path="/"
           element={
             <TodayPage
-                  profile={profile}
-                  userId={user.id}
-                  focusedGroupId={focused.focusedGroupId}
-                />
+              profile={profile}
+              userId={user.id}
+              focusedGroupId={focused.focusedGroupId}
+            />
           }
         />
         <Route path="/roadmap" element={<RoadmapPage userId={user.id} />} />
@@ -75,9 +80,7 @@ export default function App() {
         <Route path="/log" element={<LogAttemptPage />} />
         <Route
           path="/attempts"
-          element={
-            <RecentAttemptsPage profile={profile} userId={user.id} />
-          }
+          element={<RecentAttemptsPage profile={profile} userId={user.id} />}
         />
         <Route
           path="/groups/manage"

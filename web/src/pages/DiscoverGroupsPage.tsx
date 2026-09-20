@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { EmptyState } from '../components/EmptyState'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
 
 type PublicGroup = {
@@ -125,7 +128,7 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
   }
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <h1>Discover groups</h1>
         <p>
@@ -150,12 +153,37 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
         </div>
       </form>
 
-      {error ? <p className="message error">{error}</p> : null}
-      {message ? <p className="message">{message}</p> : null}
-      {loading ? <p className="muted">Loading…</p> : null}
+      {error ? (
+        <StatusBanner
+          tone="error"
+          message={error}
+          onRetry={() => void load(query)}
+        />
+      ) : null}
+      {message ? <StatusBanner tone="ok" message={message} /> : null}
+      {loading && groups.length === 0 ? (
+        <PageSkeleton rows={4} label="Loading groups" />
+      ) : null}
 
       {!loading && groups.length === 0 ? (
-        <p className="muted">No public groups match.</p>
+        <EmptyState
+          title="No public groups match"
+          hint={
+            query.trim()
+              ? 'Try a different search, or create your own group.'
+              : 'Create a public group so others can discover it.'
+          }
+          actionLabel={query.trim() ? 'Clear search' : 'Create a group'}
+          actionTo={query.trim() ? undefined : '/groups/join'}
+          onAction={
+            query.trim()
+              ? () => {
+                  setQuery('')
+                  void load('')
+                }
+              : undefined
+          }
+        />
       ) : null}
 
       {groups.length > 0 ? (

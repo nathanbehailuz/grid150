@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
 import {
   formatLongDate,
@@ -311,7 +313,7 @@ export function TodayPage({
   }
 
   return (
-    <div className="stack">
+    <div className="stack page-enter">
       <header className="page-head">
         <p className="muted" style={{ marginBottom: '0.35rem' }}>
           {formatLongDate(profile.timezone)} · {weekOfLabel}
@@ -322,9 +324,11 @@ export function TodayPage({
         </h1>
       </header>
 
-      {error ? <p className="message error">{error}</p> : null}
+      {error ? (
+        <StatusBanner tone="error" message={error} onRetry={() => void load()} />
+      ) : null}
       {loading && !nextProblem && reviews.length === 0 ? (
-        <p className="muted">Loading…</p>
+        <PageSkeleton rows={5} label="Loading today" />
       ) : null}
 
       {blocked ? (
