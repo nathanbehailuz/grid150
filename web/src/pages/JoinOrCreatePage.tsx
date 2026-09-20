@@ -12,6 +12,7 @@ export function JoinOrCreatePage({ onJoined }: Props) {
   const [name, setName] = useState('')
   const [visibility, setVisibility] = useState<'private' | 'public'>('private')
   const [joinMode, setJoinMode] = useState<'open' | 'approval'>('approval')
+  const [dailyTarget, setDailyTarget] = useState('1')
   const [inviteCode, setInviteCode] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -50,6 +51,7 @@ export function JoinOrCreatePage({ onJoined }: Props) {
         p_name: name.trim(),
         p_visibility: visibility,
         p_join_mode: joinMode,
+        p_daily_new_target: Math.max(0, Number(dailyTarget) || 0),
       })
       if (rpcErr) throw rpcErr
       const row = Array.isArray(data) ? data[0] : data
@@ -155,6 +157,20 @@ export function JoinOrCreatePage({ onJoined }: Props) {
                 <option value="open">Open</option>
               </select>
             </label>
+            <label>
+              Daily new problems (default)
+              <input
+                type="number"
+                min={0}
+                value={dailyTarget}
+                onChange={(e) => setDailyTarget(e.target.value)}
+                required
+              />
+            </label>
+            <p className="muted" style={{ margin: 0, fontSize: '0.8125rem' }}>
+              New members start at this target. Anyone can schedule a lower
+              personal target for next week on the Leaderboard.
+            </p>
             <button type="submit" disabled={busy}>
               {busy ? 'Creating…' : 'Create group'}
             </button>

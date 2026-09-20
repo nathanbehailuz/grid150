@@ -14,6 +14,13 @@ type Props = {
   children: ReactNode
 }
 
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
 export function AppShell({
   profile,
   email,
@@ -22,16 +29,19 @@ export function AppShell({
   children,
 }: Props) {
   const [groupsOpen, setGroupsOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [mobileNav, setMobileNav] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const profileRef = useRef<HTMLDivElement>(null)
   const menuId = useId()
+  const profileMenuId = useId()
   const navigate = useNavigate()
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
-      if (!menuRef.current?.contains(e.target as Node)) {
-        setGroupsOpen(false)
-      }
+      const t = e.target as Node
+      if (!menuRef.current?.contains(t)) setGroupsOpen(false)
+      if (!profileRef.current?.contains(t)) setProfileOpen(false)
     }
     document.addEventListener('mousedown', onDoc)
     return () => document.removeEventListener('mousedown', onDoc)
@@ -152,7 +162,9 @@ export function AppShell({
                     type="button"
                     role="menuitem"
                     className={
-                      m.group_id === focused.focusedGroupId ? 'current' : undefined
+                      m.group_id === focused.focusedGroupId
+                        ? 'current'
+                        : undefined
                     }
                     onClick={() => void pickGroup(m.group_id)}
                   >
@@ -163,26 +175,6 @@ export function AppShell({
                   </button>
                 ))
               )}
-              <Link
-                to="/groups/discover"
-                role="menuitem"
-                onClick={() => {
-                  setGroupsOpen(false)
-                  setMobileNav(false)
-                }}
-              >
-                Discover
-              </Link>
-              <Link
-                to="/groups/join"
-                role="menuitem"
-                onClick={() => {
-                  setGroupsOpen(false)
-                  setMobileNav(false)
-                }}
-              >
-                Create or join
-              </Link>
               {focused.focusedRole === 'owner' ||
               focused.focusedRole === 'admin' ? (
                 <Link
@@ -195,47 +187,76 @@ export function AppShell({
                 >
                   Manage group
                 </Link>
-              ) : focused.focusedGroupId ? (
-                <Link
-                  to="/groups/manage"
-                  role="menuitem"
-                  onClick={() => {
-                    setGroupsOpen(false)
-                    setMobileNav(false)
-                  }}
-                >
-                  Group settings
-                </Link>
               ) : null}
             </div>
           ) : null}
         </div>
       </nav>
 
-      <div className="shell-profile">
-        <Link to="/profile" onClick={() => setMobileNav(false)}>
-          <strong>{profile.display_name}</strong>
-          <span>
-            {focused.focusedRole
-              ? focused.focusedRole.charAt(0).toUpperCase() +
-                focused.focusedRole.slice(1)
-              : 'Member'}
-            {' · '}
-            {focused.memberships.length} group
-            {focused.memberships.length === 1 ? '' : 's'}
-          </span>
-        </Link>
-        <Link
-          to="/attempts"
-          className="shell-attempts-link"
-          onClick={() => setMobileNav(false)}
+      <div className="shell-profile" ref={profileRef}>
+        {profileOpen ? (
+          <div
+            id={profileMenuId}
+            className="profile-menu"
+            role="menu"
+            aria-label="Account"
+          >
+            <div className="profile-menu-head">
+              <span className="profile-avatar" aria-hidden>
+                {initials(profile.display_name)}
+              </span>
+              <div>
+                <strong>{profile.display_name}</strong>
+                {email ? <span>{email}</span> : null}
+              </div>
+            </div>
+            <Link
+              to="/profile"
+              role="menuitem"
+              onClick={() => {
+                setProfileOpen(false)
+                setMobileNav(false)
+              }}
+            >
+              Profile
+            </Link>
+            <Link
+              to="/attempts"
+              role="menuitem"
+              onClick={() => {
+                setProfileOpen(false)
+                setMobileNav(false)
+              }}
+            >
+              Recent attempts
+            </Link>
+            <button
+              type="button"
+              role="menuitem"
+              className="profile-logout"
+              onClick={() => {
+                setProfileOpen(false)
+                onSignOut()
+              }}
+            >
+              Log out
+            </button>
+          </div>
+        ) : null}
+        <button
+          type="button"
+          className="profile-trigger"
+          aria-expanded={profileOpen}
+          aria-controls={profileMenuId}
+          onClick={() => setProfileOpen((o) => !o)}
         >
-          Recent attempts
-        </Link>
-        <button type="button" className="ghost" onClick={onSignOut}>
-          Log out
+          <span className="profile-avatar" aria-hidden>
+            {initials(profile.display_name)}
+          </span>
+          <span className="profile-trigger-text">
+            <strong>{profile.display_name}</strong>
+          </span>
         </button>
-        {email ? <span className="shell-email">{email}</span> : null}
       </div>
     </>
   )
@@ -266,20 +287,12 @@ export function AppShell({
             Menu
           </button>
           <div className="header-actions">
-            <button type="button" className="chrome-inert" disabled title="Coming later">
-              Search
-            </button>
-            <button
-              type="button"
-              className="chrome-inert alerts-btn"
-              disabled
-              title="Coming later"
-            >
-              Alerts
-              {focused.dueReviewCount > 0 ? (
-                <span className="alert-badge">{focused.dueReviewCount}</span>
-              ) : null}
-            </button>
+            <Link to="/groups/discover" className="header-link">
+              Discover
+            </Link>
+            <Link to="/groups/join" className="header-link">
+              Create / join
+            </Link>
             <Link to="/log" className="btn-primary">
               Log attempt
             </Link>
@@ -297,7 +310,7 @@ export function AppShell({
           Log
         </Link>
         <NavLink to="/leaderboard">Board</NavLink>
-        <NavLink to="/groups/join">Groups</NavLink>
+        <NavLink to="/groups/discover">Discover</NavLink>
       </nav>
     </div>
   )

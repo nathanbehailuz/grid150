@@ -73,7 +73,7 @@ export function GroupManagePage({
   const [paceMarkerTopicId, setPaceMarkerTopicId] = useState('')
   const [paceMarkerNote, setPaceMarkerNote] = useState('')
   const [topics, setTopics] = useState<{ id: string; name: string }[]>([])
-  const [dailyTarget, setDailyTarget] = useState('1')
+  const [defaultDaily, setDefaultDaily] = useState('1')
   const [invalidateRows, setInvalidateRows] = useState<InvalidateRow[]>([])
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -98,8 +98,17 @@ export function GroupManagePage({
       setVisibility(group.visibility as 'private' | 'public')
       setJoinMode(group.join_mode as 'open' | 'approval')
 
-      const [invRes, memRes, paceRes, targetRes, reqRes, topicsRes] =
-        await Promise.all([
+      // Members only need leave. Invites / join requests are admin-only under RLS.
+      if (!isAdmin) {
+        setInvites([])
+        setMembers([])
+        setRequests([])
+        setTopics([])
+        setInvalidateRows([])
+        return
+      }
+
+      const [invRes, memRes, paceRes, reqRes, topicsRes] = await Promise.all([
         supabase
           .from('group_invites')
           .select('id, code, created_at, expires_at, revoked_at')
@@ -114,19 +123,15 @@ export function GroupManagePage({
         supabase
           .from('group_pace_settings')
           .select(
-            'problems_per_week, deadline, active_days, pace_marker_topic_id, pace_marker_note',
+            'problems_per_week, deadline, active_days, pace_marker_topic_id, pace_marker_note, default_daily_new_target',
           )
           .eq('group_id', focusedGroupId)
           .maybeSingle(),
         supabase
-          .from('member_targets')
-          .select('daily_new_target')
-          .eq('group_id', focusedGroupId)
-          .eq('user_id', userId)
-          .maybeSingle(),
-        supabase
           .from('group_join_requests')
-          .select('id, user_id, created_at, profiles!inner(display_name)')
+          .select(
+            'id, user_id, created_at, profiles!group_join_requests_user_id_fkey(display_name)',
+          )
           .eq('group_id', focusedGroupId)
           .eq('status', 'pending')
           .order('created_at', { ascending: true }),
@@ -139,7 +144,6 @@ export function GroupManagePage({
       if (invRes.error) throw invRes.error
       if (memRes.error) throw memRes.error
       if (paceRes.error) throw paceRes.error
-      if (targetRes.error) throw targetRes.error
       if (reqRes.error) throw reqRes.error
       if (topicsRes.error) throw topicsRes.error
 
@@ -158,12 +162,14 @@ export function GroupManagePage({
       )
       setRequests(
         (reqRes.data ?? []).map((r) => {
-          const profiles = r.profiles as unknown as { display_name: string }
+          const profiles = r.profiles as unknown as
+            | { display_name: string }
+            | null
           return {
             id: r.id as string,
             user_id: r.user_id as string,
             created_at: r.created_at as string,
-            display_name: profiles.display_name,
+            display_name: profiles?.display_name ?? 'Requester',
           }
         }),
       )
@@ -184,6 +190,11 @@ export function GroupManagePage({
         setPaceMarkerNote(
           (paceRes.data.pace_marker_note as string | null) ?? '',
         )
+        setDefaultDaily(
+          String(
+            (paceRes.data.default_daily_new_target as number | null) ?? 1,
+          ),
+        )
       }
       setTopics(
         (topicsRes.data ?? []).map((t) => ({
@@ -191,57 +202,61 @@ export function GroupManagePage({
           name: t.name as string,
         })),
       )
-      setDailyTarget(String(targetRes.data?.daily_new_target ?? 1))
 
-      if (isAdmin) {
-        const { data: meta, error: mErr } = await supabase.rpc(
-          'attempt_invalidation_meta_for_admin',
-          { p_group_id: focusedGroupId },
-        )
-        if (mErr) throw mErr
-        const rows = (meta ?? []) as {
-          id: string
-          user_id: string
-          problem_id: string
-          attempt_type: string
-          outcome: string
-          completed_at: string
-          invalidated_at: string | null
-        }[]
-        const userIds = [...new Set(rows.map((r) => r.user_id))]
-        const problemIds = [...new Set(rows.map((r) => r.problem_id))]
-        const [{ data: profiles }, { data: problems }] = await Promise.all([
-          userIds.length
-            ? supabase.from('profiles').select('id, display_name').in('id', userIds)
-            : Promise.resolve({ data: [] }),
-          problemIds.length
-            ? supabase
-                .from('problems')
-                .select('id, title, global_order')
-                .in('id', problemIds)
-            : Promise.resolve({ data: [] }),
-        ])
-        const nameMap = new Map(
-          (profiles ?? []).map((p) => [p.id as string, p.display_name as string]),
-        )
-        const titleMap = new Map(
-          (problems ?? []).map((p) => [
-            p.id as string,
-            `#${p.global_order} ${p.title}`,
-          ]),
-        )
-        setInvalidateRows(
-          rows.map((r) => ({
-            ...r,
-            display_name: nameMap.get(r.user_id) ?? 'Member',
-            problem_title: titleMap.get(r.problem_id) ?? r.problem_id.slice(0, 8),
-          })),
-        )
-      } else {
-        setInvalidateRows([])
-      }
+      const { data: meta, error: mErr } = await supabase.rpc(
+        'attempt_invalidation_meta_for_admin',
+        { p_group_id: focusedGroupId },
+      )
+      if (mErr) throw mErr
+      const rows = (meta ?? []) as {
+        id: string
+        user_id: string
+        problem_id: string
+        attempt_type: string
+        outcome: string
+        completed_at: string
+        invalidated_at: string | null
+      }[]
+      const userIds = [...new Set(rows.map((r) => r.user_id))]
+      const problemIds = [...new Set(rows.map((r) => r.problem_id))]
+      const [{ data: profiles }, { data: problems }] = await Promise.all([
+        userIds.length
+          ? supabase.from('profiles').select('id, display_name').in('id', userIds)
+          : Promise.resolve({ data: [] }),
+        problemIds.length
+          ? supabase
+              .from('problems')
+              .select('id, title, global_order')
+              .in('id', problemIds)
+          : Promise.resolve({ data: [] }),
+      ])
+      const nameMap = new Map(
+        (profiles ?? []).map((p) => [p.id as string, p.display_name as string]),
+      )
+      const titleMap = new Map(
+        (problems ?? []).map((p) => [
+          p.id as string,
+          `#${p.global_order} ${p.title}`,
+        ]),
+      )
+      setInvalidateRows(
+        rows.map((r) => ({
+          ...r,
+          display_name: nameMap.get(r.user_id) ?? 'Member',
+          problem_title: titleMap.get(r.problem_id) ?? r.problem_id.slice(0, 8),
+        })),
+      )
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load group')
+      const msg =
+        err instanceof Error
+          ? err.message
+          : err &&
+              typeof err === 'object' &&
+              'message' in err &&
+              typeof (err as { message: unknown }).message === 'string'
+            ? (err as { message: string }).message
+            : 'Failed to load group'
+      setError(msg)
     } finally {
       setLoading(false)
     }
@@ -297,45 +312,26 @@ export function GroupManagePage({
       {!isAdmin ? (
         <section className="panel">
           <p className="muted">
-            You are a member. Owners and admins manage settings, invites, and
-            invalidation. You can update your daily target and leave the group.
+            You are a member. Schedule your daily new-problem target for next
+            week on the{' '}
+            <Link to="/leaderboard">Leaderboard</Link> (Your Standing). Owners
+            and admins manage group settings here.
           </p>
-          <form
-            className="form-grid"
-            onSubmit={(e: FormEvent) => {
-              e.preventDefault()
-              void run(async () => {
-                if (!supabase) return
-                const { error: rpcErr } = await supabase.rpc('set_daily_target', {
-                  p_group_id: focusedGroupId,
-                  p_daily_new_target: Number(dailyTarget),
-                })
-                if (rpcErr) throw rpcErr
-              }, 'Daily target queued for next week (or set).')
-            }}
-          >
-            <label>
-              Your daily new-problem target
-              <input
-                type="number"
-                min={0}
-                value={dailyTarget}
-                onChange={(e) => setDailyTarget(e.target.value)}
-              />
-            </label>
-            <button type="submit" disabled={busy}>
-              Save target
-            </button>
-          </form>
           <button
             type="button"
             className="btn"
-            style={{ marginTop: '0.75rem' }}
             disabled={busy}
             onClick={() =>
               void run(async () => {
                 if (!supabase) return
-                const mine = members.find((m) => m.user_id === userId)
+                const { data: mine, error: mErr } = await supabase
+                  .from('group_memberships')
+                  .select('id')
+                  .eq('group_id', focusedGroupId)
+                  .eq('user_id', userId)
+                  .is('left_at', null)
+                  .maybeSingle()
+                if (mErr) throw mErr
                 if (!mine) throw new Error('Membership not found')
                 const { error: uErr } = await supabase
                   .from('group_memberships')
@@ -567,6 +563,10 @@ export function GroupManagePage({
                       active_days: activeDays,
                       pace_marker_topic_id: paceMarkerTopicId || null,
                       pace_marker_note: paceMarkerNote.trim() || null,
+                      default_daily_new_target: Math.max(
+                        0,
+                        Number(defaultDaily) || 0,
+                      ),
                       updated_at: new Date().toISOString(),
                     })
                     .eq('group_id', focusedGroupId)
@@ -582,6 +582,15 @@ export function GroupManagePage({
                   value={pacePerWeek}
                   onChange={(e) => setPacePerWeek(e.target.value)}
                   placeholder="Optional"
+                />
+              </label>
+              <label>
+                Default daily new problems
+                <input
+                  type="number"
+                  min={0}
+                  value={defaultDaily}
+                  onChange={(e) => setDefaultDaily(e.target.value)}
                 />
               </label>
               <label>
@@ -644,39 +653,12 @@ export function GroupManagePage({
                   ))}
                 </div>
               </div>
+              <p className="muted" style={{ margin: 0, fontSize: '0.8125rem' }}>
+                Default daily applies to new members. Personal target changes
+                are scheduled on the Leaderboard and take effect next week.
+              </p>
               <button type="submit" disabled={busy || activeDays.length === 0}>
                 Save pace
-              </button>
-            </form>
-            <form
-              className="form-grid"
-              style={{ marginTop: '1rem' }}
-              onSubmit={(e: FormEvent) => {
-                e.preventDefault()
-                void run(async () => {
-                  if (!supabase) return
-                  const { error: rpcErr } = await supabase.rpc(
-                    'set_daily_target',
-                    {
-                      p_group_id: focusedGroupId,
-                      p_daily_new_target: Number(dailyTarget),
-                    },
-                  )
-                  if (rpcErr) throw rpcErr
-                }, 'Your daily target saved.')
-              }}
-            >
-              <label>
-                Your daily new-problem target
-                <input
-                  type="number"
-                  min={0}
-                  value={dailyTarget}
-                  onChange={(e) => setDailyTarget(e.target.value)}
-                />
-              </label>
-              <button type="submit" disabled={busy}>
-                Save my target
               </button>
             </form>
           </section>

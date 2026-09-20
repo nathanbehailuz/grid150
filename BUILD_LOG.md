@@ -67,7 +67,7 @@
 - Decision: P5 visual language follows muted mockup palette (not a purple-gradient rebuild); standings stay reaction-free; search/notifications stay inert.
 - Decision: Mockup parity uses CSS/SVG bars and client aggregates instead of adding a chart library (library waits for P5.1 analytics).
 - Decision: Split P5.1 — ship admin + attempt correction first (backend already existed); defer analytics/charts/discovery to P5.1b (alternative considered: one mega pass).
-- Decision: P5.1b uses **Recharts** for mastery/weak/indep charts; consistency heatmap stays a CSS grid (denser). Attempts stay owner-only, so peer feed is via `group_recent_activity` SECURITY DEFINER (non-private columns only).
+- Decision: Personal daily targets edit on **Leaderboard → Your Standing** for the focused group; `set_daily_target` always queues `pending_*` for next ISO week (this week unchanged). Create-group sets `default_daily_new_target` for new joiners.
 - Decision: Public discovery ranks by **active member count desc**, then `created_at desc`; name search is `ilike`. Reactions target attempt ids as `activity` (standings stay reaction-free). Streak milestone chips are self-only via `current_streak`.
 
 ## Hard parts / dead ends
@@ -101,6 +101,11 @@
 - 2026-09-20: Mockup parity `typecheck` / `test` / `build` green after calendar, dual log, roadmap panel, and leaderboard standing card.
 - 2026-09-20: P5.1 phase 1 applied invite RPCs via Supabase MCP `apply_migration` (CLI `db push` blocked on local telemetry EPERM); web typecheck/test/build/oxlint.
 - 2026-09-20: P5.1b applied activity/discovery RPCs via MCP; web typecheck/test/build/oxlint after Analytics + Discover.
+- 2026-09-20: Fixed Manage group “Failed to load group” for members — skip admin-only invites fetch; disambiguate `group_join_requests` → `profiles` embed (`user_id` vs `resolved_by`).
+- 2026-09-20: Daily target UX — edit per group under Groups dropdown; `default_daily_new_target` on create/join; Discover list cards; ChatGPT-style profile menu (name → account popover).
+- 2026-09-20: Moved personal daily target to Leaderboard Your Standing; Schedule queues `pending_*` for next week only (not sidebar).
+- 2026-09-20: Header nav — Discover + Create/join; removed inert Search/Alerts; Groups dropdown is memberships (+ Manage) only.
+- 2026-09-20: Added `web/vercel.json` SPA rewrite for Vercel deploy (`web/` as root, Vite `dist`).
 
 ## Known limitations
 

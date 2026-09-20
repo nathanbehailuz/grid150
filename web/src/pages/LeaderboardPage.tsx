@@ -57,6 +57,12 @@ export function LeaderboardPage({
     daysLeft: number | null
   }>({ problems_per_week: null, deadline: null, daysLeft: null })
   const [yourOutput, setYourOutput] = useState({ indep: 0, hint: 0 })
+  const [thisWeekTarget, setThisWeekTarget] = useState(1)
+  const [nextWeekInput, setNextWeekInput] = useState('1')
+  const [pendingTarget, setPendingTarget] = useState<number | null>(null)
+  const [pendingWeek, setPendingWeek] = useState<string | null>(null)
+  const [targetBusy, setTargetBusy] = useState(false)
+  const [targetMsg, setTargetMsg] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -75,7 +81,7 @@ export function LeaderboardPage({
       const prevStart = priorWeekStart(weekStart)
       const today = localDateInTz(profile.timezone)
 
-      const [paceRes, progressRes, thisRes, prevRes, allRes, streakRes] =
+      const [paceRes, progressRes, thisRes, prevRes, allRes, streakRes, targetRes] =
         await Promise.all([
         supabase
           .from('group_pace_settings')
@@ -104,14 +110,55 @@ export function LeaderboardPage({
           .select('user_id, total')
           .eq('group_id', focusedGroupId),
         supabase.rpc('current_streak', { p_group_id: focusedGroupId }),
+        supabase
+          .from('member_targets')
+          .select(
+            'daily_new_target, pending_daily_new_target, pending_effective_week_start',
+          )
+          .eq('group_id', focusedGroupId)
+          .eq('user_id', userId)
+          .maybeSingle(),
       ])
 
       if (paceRes.error) throw paceRes.error
       if (thisRes.error) throw thisRes.error
       if (prevRes.error) throw prevRes.error
       if (allRes.error) throw allRes.error
+      if (targetRes.error) throw targetRes.error
       const streakVal =
         typeof streakRes.data === 'number' ? streakRes.data : null
+
+      const currentTarget = Number(targetRes.data?.daily_new_target ?? 1)
+      const pending = targetRes.data?.pending_daily_new_target as
+        | number
+        | null
+        | undefined
+      const pendingStart = targetRes.data?.pending_effective_week_start as
+        | string
+        | null
+        | undefined
+      // Pending already effective this week → treat as current
+      const pendingActive =
+        pending != null && pendingStart != null && weekStart >= pendingStart
+      setThisWeekTarget(pendingActive ? Number(pending) : currentTarget)
+      setPendingTarget(
+        pending != null && pendingStart != null && weekStart < pendingStart
+          ? Number(pending)
+          : null,
+      )
+      setPendingWeek(
+        pending != null && pendingStart != null && weekStart < pendingStart
+          ? pendingStart
+          : null,
+      )
+      setNextWeekInput(
+        String(
+          pending != null && pendingStart != null && weekStart < pendingStart
+            ? pending
+            : currentTarget,
+        ),
+      )
+      setTargetMsg(null)
 
       if (paceRes.data) {
         setPace({
@@ -245,6 +292,35 @@ export function LeaderboardPage({
   useEffect(() => {
     void load()
   }, [load])
+
+  async function scheduleNextWeekTarget() {
+    if (!supabase || !focusedGroupId) return
+    setTargetBusy(true)
+    setTargetMsg(null)
+    try {
+      const value = Math.max(0, Number(nextWeekInput) || 0)
+      const { error: rpcErr } = await supabase.rpc('set_daily_target', {
+        p_group_id: focusedGroupId,
+        p_daily_new_target: value,
+      })
+      if (rpcErr) throw rpcErr
+      setTargetMsg('Scheduled for next week. This week stays unchanged.')
+      await load()
+    } catch (err) {
+      setTargetMsg(
+        err instanceof Error
+          ? err.message
+          : err &&
+              typeof err === 'object' &&
+              'message' in err &&
+              typeof (err as { message: unknown }).message === 'string'
+            ? (err as { message: string }).message
+            : 'Could not schedule target',
+      )
+    } finally {
+      setTargetBusy(false)
+    }
+  }
 
   if (!focusedGroupId) {
     return (
@@ -397,6 +473,47 @@ export function LeaderboardPage({
             <p className="muted">
               Your output: {yourOutput.indep} indep · {yourOutput.hint} hint
             </p>
+            <p className="muted" style={{ marginBottom: '0.5rem' }}>
+              Daily target this week: {thisWeekTarget} new problem
+              {thisWeekTarget === 1 ? '' : 's'}
+              {pendingTarget != null
+                ? ` · next week queued: ${pendingTarget}`
+                : ''}
+            </p>
+            <form
+              className="daily-target-form"
+              onSubmit={(e) => {
+                e.preventDefault()
+                void scheduleNextWeekTarget()
+              }}
+            >
+              <label htmlFor="next-week-target">
+                Change for next week
+                <input
+                  id="next-week-target"
+                  type="number"
+                  min={0}
+                  value={nextWeekInput}
+                  onChange={(e) => setNextWeekInput(e.target.value)}
+                />
+              </label>
+              <button type="submit" disabled={targetBusy}>
+                {targetBusy ? 'Saving…' : 'Schedule'}
+              </button>
+            </form>
+            {targetMsg ? (
+              <p className="muted" style={{ marginTop: '0.35rem', fontSize: '0.8125rem' }}>
+                {targetMsg}
+              </p>
+            ) : pendingWeek ? (
+              <p className="muted" style={{ marginTop: '0.35rem', fontSize: '0.8125rem' }}>
+                Takes effect week of {pendingWeek}.
+              </p>
+            ) : (
+              <p className="muted" style={{ marginTop: '0.35rem', fontSize: '0.8125rem' }}>
+                Changes never apply mid-week.
+              </p>
+            )}
           </div>
         </div>
       </section>

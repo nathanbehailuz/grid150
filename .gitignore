@@ -32,3 +32,5 @@ supabase/.temp
 coverage/
 .turbo/
 *.tsbuildinfo
+
+.cursor

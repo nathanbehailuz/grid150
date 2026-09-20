@@ -59,7 +59,22 @@ npm run build
 npm run lint
 ```
 
-**Never** put the Supabase service role key in Vite env. It is for server / Edge Functions only (later phases).
+## Deploy (Vercel)
+
+App root is `web/` (Vite). SPA fallback is in `web/vercel.json`.
+
+```bash
+cd web
+npx vercel login
+npx vercel link   # Root Directory: web (if linking from monorepo root, set Root Directory to web)
+npx vercel env add VITE_SUPABASE_URL production
+npx vercel env add VITE_SUPABASE_ANON_KEY production
+npx vercel --prod
+```
+
+Or from the dashboard: import `nathanbehailuz/grid150`, set **Root Directory** to `web`, add the two `VITE_*` env vars, deploy.
+
+After deploy, add the Vercel origin to Supabase **Authentication → URL configuration** (Site URL + Redirect URLs).
 
 ### Env
 

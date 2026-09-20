@@ -37,11 +37,20 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
       setGroups(
         ((data ?? []) as PublicGroup[]).map((g) => ({
           ...g,
-          member_count: Number(g.member_count),
+          member_count: Number(g.member_count ?? 0),
         })),
       )
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load groups')
+      const msg =
+        err instanceof Error
+          ? err.message
+          : err &&
+              typeof err === 'object' &&
+              'message' in err &&
+              typeof (err as { message: unknown }).message === 'string'
+            ? (err as { message: string }).message
+            : 'Failed to load groups'
+      setError(msg)
       setGroups([])
     } finally {
       setLoading(false)
@@ -77,6 +86,12 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
           data: { user },
         } = await supabase.auth.getUser()
         if (!user) throw new Error('Not signed in')
+        const { data: pace } = await supabase
+          .from('group_pace_settings')
+          .select('default_daily_new_target')
+          .eq('group_id', groupId)
+          .maybeSingle()
+        const daily = Number(pace?.default_daily_new_target ?? 1)
         const { error: insErr } = await supabase
           .from('group_memberships')
           .insert({ group_id: groupId, user_id: user.id, role: 'member' })
@@ -85,7 +100,7 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
           {
             user_id: user.id,
             group_id: groupId,
-            daily_new_target: 1,
+            daily_new_target: daily,
           },
           { onConflict: 'user_id,group_id' },
         )
@@ -94,7 +109,16 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
         await onJoined?.()
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Join failed')
+      const msg =
+        err instanceof Error
+          ? err.message
+          : err &&
+              typeof err === 'object' &&
+              'message' in err &&
+              typeof (err as { message: unknown }).message === 'string'
+            ? (err as { message: string }).message
+            : 'Join failed'
+      setError(msg)
     } finally {
       setBusyId(null)
     }
@@ -110,19 +134,20 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
         </p>
       </header>
 
-      <form className="form-grid" onSubmit={onSearch}>
-        <label>
-          Search by name
+      <form className="discover-search" onSubmit={onSearch}>
+        <label htmlFor="discover-q">Search by name</label>
+        <div className="discover-search-row">
           <input
+            id="discover-q"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g. FAANG"
           />
-        </label>
-        <button type="submit" disabled={loading}>
-          Search
-        </button>
+          <button type="submit" disabled={loading}>
+            Search
+          </button>
+        </div>
       </form>
 
       {error ? <p className="message error">{error}</p> : null}
@@ -134,56 +159,45 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
       ) : null}
 
       {groups.length > 0 ? (
-        <section className="panel">
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Group</th>
-                  <th>Members</th>
-                  <th>Join</th>
-                  <th>Pace</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {groups.map((g) => {
-                  const paceParts: string[] = []
-                  if (g.problems_per_week != null) {
-                    paceParts.push(`${g.problems_per_week}/wk`)
-                  }
-                  if (g.deadline) {
-                    paceParts.push(`by ${g.deadline}`)
-                  }
-                  const requested = requestedIds.has(g.id)
-                  return (
-                    <tr key={g.id}>
-                      <td>{g.name}</td>
-                      <td>{g.member_count}</td>
-                      <td>{g.join_mode}</td>
-                      <td>{paceParts.length ? paceParts.join(' · ') : '—'}</td>
-                      <td>
-                        <button
-                          type="button"
-                          disabled={busyId === g.id || requested}
-                          onClick={() => void requestJoin(g.id, g.join_mode)}
-                        >
-                          {requested
-                            ? g.join_mode === 'open'
-                              ? 'Joined'
-                              : 'Requested'
-                            : g.join_mode === 'open'
-                              ? 'Join'
-                              : 'Request to join'}
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
+        <ul className="discover-list">
+          {groups.map((g) => {
+            const paceParts: string[] = []
+            if (g.problems_per_week != null) {
+              paceParts.push(`${g.problems_per_week}/wk`)
+            }
+            if (g.deadline) {
+              paceParts.push(`deadline ${g.deadline}`)
+            }
+            const requested = requestedIds.has(g.id)
+            return (
+              <li key={g.id} className="discover-row">
+                <div className="discover-row-main">
+                  <strong>{g.name}</strong>
+                  <span className="discover-meta">
+                    {g.member_count} member{g.member_count === 1 ? '' : 's'}
+                    {' · '}
+                    {g.join_mode === 'open' ? 'Open join' : 'Approval required'}
+                    {paceParts.length ? ` · ${paceParts.join(' · ')}` : ''}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="btn"
+                  disabled={busyId === g.id || requested}
+                  onClick={() => void requestJoin(g.id, g.join_mode)}
+                >
+                  {requested
+                    ? g.join_mode === 'open'
+                      ? 'Joined'
+                      : 'Requested'
+                    : g.join_mode === 'open'
+                      ? 'Join'
+                      : 'Request'}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
       ) : null}
     </div>
   )
