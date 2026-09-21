@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
 import { EmptyState } from '../components/EmptyState'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { StatusBanner } from '../components/StatusBanner'
@@ -131,10 +130,7 @@ export function DiscoverGroupsPage({ onJoined }: Props) {
     <div className="stack page-enter">
       <header className="page-head">
         <h1>Discover groups</h1>
-        <p>
-          Browse public cohorts. Private groups still join via{' '}
-          <Link to="/groups/join">invite code</Link>.
-        </p>
+        <p>Browse public cohorts or create your own group.</p>
       </header>
 
       <form className="discover-search" onSubmit={onSearch}>

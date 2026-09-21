@@ -62,8 +62,7 @@ export function GroupManagePage({
   focusedRole,
   onRefresh,
 }: Props) {
-  const isAdmin =
-    focusedRole === 'owner' || focusedRole === 'admin'
+  const isAdmin = focusedRole === 'owner' || focusedRole === 'admin'
   const isOwner = focusedRole === 'owner'
   const navigate = useNavigate()
 
@@ -169,9 +168,9 @@ export function GroupManagePage({
       )
       setRequests(
         (reqRes.data ?? []).map((r) => {
-          const profiles = r.profiles as unknown as
-            | { display_name: string }
-            | null
+          const profiles = r.profiles as unknown as {
+            display_name: string
+          } | null
           return {
             id: r.id as string,
             user_id: r.user_id as string,
@@ -188,9 +187,7 @@ export function GroupManagePage({
             : '',
         )
         setDeadline((paceRes.data.deadline as string | null) ?? '')
-        setActiveDays(
-          (paceRes.data.active_days as number[]) ?? [1, 2, 3, 4, 5],
-        )
+        setActiveDays((paceRes.data.active_days as number[]) ?? [1, 2, 3, 4, 5])
         setPaceMarkerTopicId(
           (paceRes.data.pace_marker_topic_id as string | null) ?? '',
         )
@@ -198,9 +195,7 @@ export function GroupManagePage({
           (paceRes.data.pace_marker_note as string | null) ?? '',
         )
         setDefaultDaily(
-          String(
-            (paceRes.data.default_daily_new_target as number | null) ?? 1,
-          ),
+          String((paceRes.data.default_daily_new_target as number | null) ?? 1),
         )
       }
       setTopics(
@@ -228,7 +223,10 @@ export function GroupManagePage({
       const problemIds = [...new Set(rows.map((r) => r.problem_id))]
       const [{ data: profiles }, { data: problems }] = await Promise.all([
         userIds.length
-          ? supabase.from('profiles').select('id, display_name').in('id', userIds)
+          ? supabase
+              .from('profiles')
+              .select('id, display_name')
+              .in('id', userIds)
           : Promise.resolve({ data: [] }),
         problemIds.length
           ? supabase
@@ -302,8 +300,8 @@ export function GroupManagePage({
         </header>
         <EmptyState
           title="No focused group"
-          hint="Create a group or join with an invite code, then open Manage."
-          actionLabel="Create or join"
+          hint="Create a group, then open Manage."
+          actionLabel="Create group"
           actionTo="/groups/join"
         />
       </div>
@@ -349,9 +347,8 @@ export function GroupManagePage({
         <section className="panel">
           <p className="muted">
             You are a member. Schedule your daily new-problem target for next
-            week on the{' '}
-            <Link to="/leaderboard">Leaderboard</Link> (Your Standing). Owners
-            and admins manage group settings here.
+            week on the <Link to="/leaderboard">Leaderboard</Link> (Your
+            Standing). Owners and admins manage group settings here.
           </p>
           <button
             type="button"
@@ -544,7 +541,10 @@ export function GroupManagePage({
                 </thead>
                 <tbody>
                   {members.map((m) => (
-                    <tr key={m.id} className={m.user_id === userId ? 'me' : undefined}>
+                    <tr
+                      key={m.id}
+                      className={m.user_id === userId ? 'me' : undefined}
+                    >
                       <td>{m.display_name}</td>
                       <td>
                         {focusedRole === 'owner' && m.user_id !== userId ? (
@@ -571,9 +571,7 @@ export function GroupManagePage({
                           m.role
                         )}
                       </td>
-                      <td>
-                        {formatShortDate(m.joined_at, profile.timezone)}
-                      </td>
+                      <td>{formatShortDate(m.joined_at, profile.timezone)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -665,10 +663,7 @@ export function GroupManagePage({
                 <span className="muted" style={{ fontSize: '0.8125rem' }}>
                   Active days
                 </span>
-                <div
-                  className="outcome-chips"
-                  style={{ marginTop: '0.35rem' }}
-                >
+                <div className="outcome-chips" style={{ marginTop: '0.35rem' }}>
                   {DOW_LABELS.map((label, dow) => (
                     <button
                       key={dow}
@@ -706,7 +701,11 @@ export function GroupManagePage({
             ) : (
               <div className="row-list">
                 {requests.map((r) => (
-                  <div key={r.id} className="row-link" style={{ cursor: 'default' }}>
+                  <div
+                    key={r.id}
+                    className="row-link"
+                    style={{ cursor: 'default' }}
+                  >
                     <div>
                       <div className="title">{r.display_name}</div>
                       <div className="meta">
@@ -796,7 +795,10 @@ export function GroupManagePage({
                             <td>{r.attempt_type}</td>
                             <td>{r.outcome}</td>
                             <td>
-                              {formatShortDate(r.completed_at, profile.timezone)}
+                              {formatShortDate(
+                                r.completed_at,
+                                profile.timezone,
+                              )}
                             </td>
                             <td>
                               <button

@@ -123,7 +123,7 @@ export default function App() {
           path="/groups/join"
           element={
             <JoinOrCreatePage
-              onJoined={async () => {
+              onCreated={async () => {
                 await refreshProfile()
                 await focused.reload()
               }}

@@ -43,6 +43,7 @@
 - Summary TODAY block and queue footer call out extras when solves exceed the daily target (`3/2` → `+1 beyond plan`).
 - All-time leaderboard Indep/Hint used this week’s snapshot only (e.g. 58 NeetCode vs 3/0). Now sums group weekly indep/hint across weeks.
 - Group creation now rejects case-insensitive duplicate names at the database, guards double-submit in the client, validates names/targets, and skips redundant auto-invites for public/open groups. Removed the empty duplicate while preserving the newer focused group.
+- `/groups/join` is now create-only: the invite-code join form and “Create / join” labels were removed. Creation now requires at least one active day and saves the chosen rest-day schedule atomically in `create_group`.
 
 ## How I verified it works
 
@@ -50,7 +51,7 @@
 - Manual: login as `alex@grid150.demo` → Today (overdue review block) → Leaderboard / Analytics charts → Manage (invites, delete confirm) → Discover.
 - RLS: owner-only attempt SELECT; documented proof path in `docs/DATA_MODEL.md` (Marcus cannot read Alex’s `private_reflection`).
 - Realtime: subscribe + refetch on standings/manage/analytics when snapshots/reactions/join requests change.
-- Group creation: production migration recorded; normalized-name unique index present; duplicate count is 0; retained the newer focused test group. Typecheck, 11 Vitest tests, production build, and Supabase advisors run (only pre-existing warnings).
+- Group creation: production migrations recorded; normalized-name unique index present; duplicate count is 0; retained the newer focused test group. Verified create-only UI with Mon–Fri active by default, plus typecheck, 11 Vitest tests, production build, and Supabase advisors (only pre-existing warnings).
 - With more time: E2E two-tab realtime smoke in CI; broader RLS matrix tests as Vitest against a local Supabase.
 
 ## Known limitations

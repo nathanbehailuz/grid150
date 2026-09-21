@@ -71,7 +71,11 @@ export function AppShell({
   const sidebar = (
     <>
       <div className="shell-brand-block">
-        <Link to="/" className="shell-brand" onClick={() => setMobileNav(false)}>
+        <Link
+          to="/"
+          className="shell-brand"
+          onClick={() => setMobileNav(false)}
+        >
           <img src="/logo.svg" alt="" width={32} height={32} />
           <span>
             Grid<span className="accent">150</span>
@@ -161,7 +165,7 @@ export function AppShell({
                 <p className="groups-empty">
                   No groups yet.{' '}
                   <Link to="/groups/join" onClick={() => setGroupsOpen(false)}>
-                    Create or join
+                    Create group
                   </Link>
                 </p>
               ) : (
@@ -300,7 +304,7 @@ export function AppShell({
               Discover
             </Link>
             <Link to="/groups/join" className="header-link">
-              Create / join
+              Create group
             </Link>
             <Link to="/log" className="btn-primary">
               Log attempt
