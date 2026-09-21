@@ -70,9 +70,13 @@ export function AuthPage({ mode }: { mode: Mode }) {
     return (
       <div className="auth-shell">
         <div className="auth-card">
-          <h1>
-            Grid<span className="accent-text">150</span>
-          </h1>
+          <img
+            src="/brand.png"
+            alt="Grid150"
+            className="auth-brand"
+            width={192}
+            height={38}
+          />
           <p className="message error">
             Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to web/.env.local.
           </p>
@@ -84,9 +88,13 @@ export function AuthPage({ mode }: { mode: Mode }) {
   return (
     <div className="auth-shell">
       <div className="auth-card" data-testid="auth-form">
-        <h1>
-          Grid<span className="accent-text">150</span>
-        </h1>
+        <img
+          src="/brand.png"
+          alt="Grid150"
+          className="auth-brand"
+          width={192}
+          height={38}
+        />
         <p className="lede">
           Competitive accountability for the NeetCode 150.
         </p>
