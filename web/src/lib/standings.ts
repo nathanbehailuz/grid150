@@ -57,6 +57,38 @@ export function allTimeAverage(
   return sum / mine.length
 }
 
+/** Rank by average weekly score — same ordering as the all-time leaderboard table. */
+export function allTimeStanding(
+  snaps: { user_id: string; total: number | string }[],
+  userId: string,
+): RankInfo {
+  const byUser = new Map<string, { total: number; weeks: number }>()
+  for (const s of snaps) {
+    const uid = s.user_id
+    const cur = byUser.get(uid) ?? { total: 0, weeks: 0 }
+    cur.total += Number(s.total)
+    cur.weeks += 1
+    byUser.set(uid, cur)
+  }
+  const ranked = [...byUser.entries()]
+    .filter(([, v]) => v.weeks >= 1)
+    .map(([uid, v]) => ({ user_id: uid, avg: v.total / v.weeks }))
+    .sort((a, b) => b.avg - a.avg)
+  const idx = ranked.findIndex((r) => r.user_id === userId)
+  const mine = idx >= 0 ? ranked[idx] : null
+  const first = ranked[0] ?? null
+  return {
+    rank: idx >= 0 ? idx + 1 : null,
+    of: ranked.length,
+    score: mine?.avg ?? null,
+    gapToFirst:
+      mine != null && first != null
+        ? Math.max(0, first.avg - mine.avg)
+        : null,
+    movement: null,
+  }
+}
+
 export function daysUntil(deadline: string | null, todayLocal: string): number | null {
   if (!deadline) return null
   const [ay, am, ad] = todayLocal.split('-').map(Number)

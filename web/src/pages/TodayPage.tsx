@@ -51,6 +51,7 @@ export function TodayPage({
   const [blocked, setBlocked] = useState(false)
   const [dailyTarget, setDailyTarget] = useState(1)
   const [completedToday, setCompletedToday] = useState(0)
+  const [reviewsDoneToday, setReviewsDoneToday] = useState(0)
   const [streak, setStreak] = useState<number | null>(null)
   const [bestStreak, setBestStreak] = useState(0)
   const [weekSnap, setWeekSnap] = useState<WeeklySnapshot | null>(null)
@@ -185,6 +186,14 @@ export function TodayPage({
       setCompletedToday(
         countSolvesOnLocalDay(attemptRows, profile.timezone, todayLocal),
       )
+      setReviewsDoneToday(
+        countSolvesOnLocalDay(
+          attemptRows,
+          profile.timezone,
+          todayLocal,
+          'scheduled_review',
+        ),
+      )
 
       let active = [1, 2, 3, 4, 5]
       if (focusedGroupId) {
@@ -294,8 +303,9 @@ export function TodayPage({
     ...weekBars.map((d) => d.independent + d.hint),
   )
 
-  const reviewsDoneToday = 0 // session tally soft; keep simple
   const newRemaining = Math.max(0, dailyTarget - completedToday)
+  const beyondTarget = Math.max(0, completedToday - dailyTarget)
+  const targetMet = completedToday >= dailyTarget && dailyTarget > 0
 
   let weekOfLabel = `Week ${weekNum}`
   if (deadline) {
@@ -368,6 +378,9 @@ export function TodayPage({
                   New · {nextProblem.difficulty}
                   {nextProblem.topicName ? ` · ${nextProblem.topicName}` : ''}
                   {blocked ? ' · locked until review is logged' : ''}
+                  {!blocked && newRemaining === 0
+                    ? ' · beyond daily target'
+                    : ''}
                 </div>
               </div>
               <span className={`badge${blocked ? ' overdue' : ' ok'}`}>
@@ -391,7 +404,9 @@ export function TodayPage({
                 <div>
                   <div className="title">{r.problems.title}</div>
                   <div className="meta">
-                    {overdue ? 'Overdue' : 'Due today'}
+                    {overdue
+                      ? 'Overdue'
+                      : `Due ${formatShortDate(r.due_at, profile.timezone)}`}
                     {r.topicName ? ` · ${r.topicName}` : ''}
                     {last ? ` · ${last}` : ''}
                   </div>
@@ -408,7 +423,10 @@ export function TodayPage({
           ) : null}
         </div>
         <p className="muted" style={{ marginTop: '0.75rem' }}>
-          {reviewsDoneToday} review complete · {newRemaining} new remaining
+          {reviewsDoneToday} review complete ·{' '}
+          {beyondTarget > 0
+            ? `${beyondTarget} beyond plan`
+            : `${newRemaining} new remaining`}
           {reviews.length > actionable.length ? (
             <>
               {' · '}
@@ -434,7 +452,11 @@ export function TodayPage({
               {completedToday}/{dailyTarget}
             </div>
             <p className="muted" style={{ margin: '0.25rem 0 0' }}>
-              new problems
+              {beyondTarget > 0
+                ? `new problems · +${beyondTarget} beyond plan`
+                : targetMet
+                  ? 'new problems · target met'
+                  : 'new problems'}
             </p>
             <div className="shell-progress-bar" style={{ marginTop: '0.5rem' }}>
               <div

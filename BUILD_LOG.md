@@ -37,13 +37,20 @@
 - Today page stuck on loading from unstable refresh callback identities; stabilized hook deps.
 - Shared DB also has unrelated `public.alba_*` tables; seed/migrations never touch them.
 - Leaderboard → Analytics black-screened because `useGroupRealtime` reused channel topic `group-${id}`; mounting a second subscriber called `.on()` after `subscribe()`. Fixed with a unique topic per mount.
+- YOUR STANDING stayed on this-week rank while All-time avg table used averages (`#1 of 1` vs table `#3`). Card now uses `allTimeStanding` when that mode is selected.
+- Today never felt “done”: next unlock stayed in the queue after the daily target, and review tally was stubbed at 0. Gate new by remaining, count review solves today, show Done for today. Log stays on `/log` after submit (no `/attempts` bounce). Verified `review_delay_days` in prod: 1/1/2/4/14/30/2 matches the brief.
+- Removed the Done for today card — meeting the daily target still shows the next unlock (labeled beyond daily target) so users can keep logging; edits stay on Attempts within the 10‑minute window.
+- Summary TODAY block and queue footer call out extras when solves exceed the daily target (`3/2` → `+1 beyond plan`).
+- All-time leaderboard Indep/Hint used this week’s snapshot only (e.g. 58 NeetCode vs 3/0). Now sums group weekly indep/hint across weeks.
+- Group creation now rejects case-insensitive duplicate names at the database, guards double-submit in the client, validates names/targets, and skips redundant auto-invites for public/open groups. Removed the empty duplicate while preserving the newer focused group.
 
 ## How I verified it works
 
-- Automated: `npm run typecheck`, Vitest (9 tests), `npm run build`; SQL fixtures in `supabase/tests/p3_domain.sql` (unlock, review block, attribution, weekly score, invalidate).
+- Automated: `npm run typecheck`, Vitest (11 tests), `npm run build`; SQL fixtures in `supabase/tests/p3_domain.sql` (unlock, review block, attribution, weekly score, invalidate).
 - Manual: login as `alex@grid150.demo` → Today (overdue review block) → Leaderboard / Analytics charts → Manage (invites, delete confirm) → Discover.
 - RLS: owner-only attempt SELECT; documented proof path in `docs/DATA_MODEL.md` (Marcus cannot read Alex’s `private_reflection`).
 - Realtime: subscribe + refetch on standings/manage/analytics when snapshots/reactions/join requests change.
+- Group creation: production migration recorded; normalized-name unique index present; duplicate count is 0; retained the newer focused test group. Typecheck, 11 Vitest tests, production build, and Supabase advisors run (only pre-existing warnings).
 - With more time: E2E two-tab realtime smoke in CI; broader RLS matrix tests as Vitest against a local Supabase.
 
 ## Known limitations

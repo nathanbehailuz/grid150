@@ -11,7 +11,12 @@ import {
   priorWeekStart,
   weekStartInTz,
 } from '../lib/dates'
-import { allTimeAverage, daysUntil, standingDelta } from '../lib/standings'
+import {
+  allTimeAverage,
+  allTimeStanding,
+  daysUntil,
+  standingDelta,
+} from '../lib/standings'
 import type { Membership, Profile, WeeklySnapshot } from '../lib/types'
 
 type Row = {
@@ -110,7 +115,7 @@ export function LeaderboardPage({
           .eq('week_start', prevStart),
         supabase
           .from('weekly_score_snapshots')
-          .select('user_id, total')
+          .select('user_id, total, independent_solves, hint_assisted_solves')
           .eq('group_id', focusedGroupId),
         supabase.rpc('current_streak', { p_group_id: focusedGroupId }),
         supabase
@@ -194,8 +199,12 @@ export function LeaderboardPage({
       }) as WeeklySnapshot[]
 
       const lastWeek = (prevRes.data ?? []) as WeeklySnapshot[]
-      const info = standingDelta(thisWeek, lastWeek, userId)
       const avg = allTimeAverage(allRes.data ?? [], userId)
+      // Card must match the selected board: week rank vs all-time average rank.
+      const info =
+        mode === 'week'
+          ? standingDelta(thisWeek, lastWeek, userId)
+          : allTimeStanding(allRes.data ?? [], userId)
       setStanding({
         rank: info.rank,
         of: info.of,
@@ -206,10 +215,12 @@ export function LeaderboardPage({
       })
 
       const mine = thisWeek.find((s) => s.user_id === userId)
-      setYourOutput({
-        indep: mine?.independent_solves ?? 0,
-        hint: mine?.hint_assisted_solves ?? 0,
-      })
+      if (mode === 'week') {
+        setYourOutput({
+          indep: mine?.independent_solves ?? 0,
+          hint: mine?.hint_assisted_solves ?? 0,
+        })
+      }
 
       if (mode === 'week') {
         const prevRank = new Map<string, number>()
@@ -248,16 +259,16 @@ export function LeaderboardPage({
           }
           cur.total += Number(r.total)
           cur.weeks += 1
+          cur.indep += Number(r.independent_solves ?? 0)
+          cur.hint += Number(r.hint_assisted_solves ?? 0)
           byUser.set(uid, cur)
         }
-        // enrich indep/hint from this week snaps if present
-        for (const r of thisWeek) {
-          const cur = byUser.get(r.user_id)
-          if (cur) {
-            cur.indep = r.independent_solves
-            cur.hint = r.hint_assisted_solves
-          }
-        }
+
+        const myAll = byUser.get(userId)
+        setYourOutput({
+          indep: myAll?.indep ?? 0,
+          hint: myAll?.hint ?? 0,
+        })
 
         const userIds = [...byUser.keys()]
         const { data: profiles, error: pErr } = await supabase
@@ -457,16 +468,18 @@ export function LeaderboardPage({
               ) : null}
             </div>
             <p className="muted">
-              {standing.movement != null && standing.movement !== 0
-                ? standing.movement > 0
-                  ? `up ${standing.movement} vs last week`
-                  : `down ${Math.abs(standing.movement)} vs last week`
-                : 'flat vs last week'}
+              {mode === 'all'
+                ? 'Average of weekly scores'
+                : standing.movement != null && standing.movement !== 0
+                  ? standing.movement > 0
+                    ? `up ${standing.movement} vs last week`
+                    : `down ${Math.abs(standing.movement)} vs last week`
+                  : 'flat vs last week'}
             </p>
             <p className="muted">
-              Score{' '}
+              {mode === 'all' ? 'All-time avg ' : 'Score '}
               {standing.score != null ? standing.score.toFixed(1) : '—'}
-              {standing.allTimeAvg != null
+              {mode === 'week' && standing.allTimeAvg != null
                 ? ` · all-time avg ${standing.allTimeAvg.toFixed(1)}`
                 : ''}
             </p>
@@ -485,7 +498,8 @@ export function LeaderboardPage({
                 : '—'}
             </p>
             <p className="muted">
-              Your output: {yourOutput.indep} indep · {yourOutput.hint} hint
+              {mode === 'all' ? 'Group output (all weeks)' : 'Your output'}:{' '}
+              {yourOutput.indep} indep · {yourOutput.hint} hint
             </p>
             <p className="muted" style={{ marginBottom: '0.5rem' }}>
               Daily target this week: {thisWeekTarget} new problem

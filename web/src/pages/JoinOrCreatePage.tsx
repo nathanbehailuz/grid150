@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
@@ -17,6 +17,7 @@ export function JoinOrCreatePage({ onJoined }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const creatingRef = useRef(false)
 
   async function onJoin(e: FormEvent) {
     e.preventDefault()
@@ -42,36 +43,61 @@ export function JoinOrCreatePage({ onJoined }: Props) {
 
   async function onCreate(e: FormEvent) {
     e.preventDefault()
-    if (!supabase) return
+    if (!supabase || creatingRef.current) return
+
+    const cleanName = name.trim()
+    const target = Number(dailyTarget)
+    if (cleanName.length < 2 || cleanName.length > 80) {
+      setError('Group name must be between 2 and 80 characters.')
+      return
+    }
+    if (!Number.isInteger(target) || target < 0 || target > 20) {
+      setError('Daily target must be a whole number between 0 and 20.')
+      return
+    }
+
+    creatingRef.current = true
     setBusy(true)
     setError(null)
     setMessage(null)
+    setInviteCode(null)
     try {
       const { data, error: rpcErr } = await supabase.rpc('create_group', {
-        p_name: name.trim(),
+        p_name: cleanName,
         p_visibility: visibility,
         p_join_mode: joinMode,
-        p_daily_new_target: Math.max(0, Number(dailyTarget) || 0),
+        p_daily_new_target: target,
       })
       if (rpcErr) throw rpcErr
       const row = Array.isArray(data) ? data[0] : data
       const invite =
-        row && typeof row === 'object' && 'invite_code' in row
-          ? String((row as { invite_code: string }).invite_code)
+        row &&
+        typeof row === 'object' &&
+        typeof (row as { invite_code?: unknown }).invite_code === 'string'
+          ? (row as { invite_code: string }).invite_code
           : null
       setInviteCode(invite)
+      setName('')
       setMessage(
         invite
           ? 'Group created and set as focused. Share this invite code:'
-          : 'Group created.',
+          : 'Group created and set as focused.',
       )
       await onJoined()
       if (!invite) {
         window.setTimeout(() => navigate('/leaderboard'), 800)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Create failed')
+      const raw = err instanceof Error ? err.message : 'Create failed'
+      setError(
+        /already taken|unique/i.test(raw)
+          ? 'That group name is already taken.'
+          : /not authenticated/i.test(raw)
+            ? 'Your session expired. Please log in again.'
+            : raw,
+      )
     } finally {
+      creatingRef.current = false
       setBusy(false)
     }
   }
@@ -130,6 +156,8 @@ export function JoinOrCreatePage({ onJoined }: Props) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                minLength={2}
+                maxLength={80}
                 placeholder="FAANG Grind Club"
               />
             </label>
@@ -162,6 +190,8 @@ export function JoinOrCreatePage({ onJoined }: Props) {
               <input
                 type="number"
                 min={0}
+                max={20}
+                step={1}
                 value={dailyTarget}
                 onChange={(e) => setDailyTarget(e.target.value)}
                 required

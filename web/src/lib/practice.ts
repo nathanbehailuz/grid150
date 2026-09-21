@@ -77,10 +77,11 @@ export function countSolvesOnLocalDay(
   attempts: { completed_at: string; outcome: string; attempt_type: string }[],
   timezone: string,
   localDay: string,
+  attemptType: 'new_problem' | 'scheduled_review' = 'new_problem',
 ): number {
   let n = 0
   for (const a of attempts) {
-    if (a.attempt_type !== 'new_problem') continue
+    if (a.attempt_type !== attemptType) continue
     if (
       a.outcome !== 'solved_independently' &&
       a.outcome !== 'solved_with_hints'

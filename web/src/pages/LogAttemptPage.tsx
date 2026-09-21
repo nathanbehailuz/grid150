@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { StatusBanner } from '../components/StatusBanner'
 import { supabase } from '../lib/supabase'
@@ -117,7 +117,6 @@ export function LogAttemptPage() {
   const { profile, user } = useSession()
   const [params] = useSearchParams()
   const location = useLocation()
-  const navigate = useNavigate()
   const problemParam = params.get('problem')
   const reviewRef = useRef<HTMLElement>(null)
   const newRef = useRef<HTMLElement>(null)
@@ -306,8 +305,21 @@ export function LogAttemptPage() {
         p_private_reflection: fields.reflection.trim() || null,
       })
       if (rpcErr) throw rpcErr
+      if (attemptType === 'scheduled_review') {
+        setRevOutcome('solved_independently')
+        setRevConfidence(3)
+        setRevExplain(true)
+        setRevMinutes('')
+        setRevReflection('')
+      } else {
+        setNewOutcome('solved_independently')
+        setNewConfidence(3)
+        setNewExplain(true)
+        setNewMinutes('')
+        setNewReflection('')
+      }
       setMessage('Attempt saved.')
-      navigate('/attempts', { replace: false })
+      await load()
     } catch (err) {
       const raw = err instanceof Error ? err.message : 'Log failed'
       const friendly = /overdue review/i.test(raw)

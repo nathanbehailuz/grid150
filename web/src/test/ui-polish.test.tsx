@@ -4,7 +4,12 @@ import { describe, expect, it } from 'vitest'
 import { EmptyState } from '../components/EmptyState'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { StatusBanner } from '../components/StatusBanner'
-import { allTimeAverage, standingDelta } from '../lib/standings'
+import {
+  allTimeAverage,
+  allTimeStanding,
+  standingDelta,
+} from '../lib/standings'
+import { countSolvesOnLocalDay } from '../lib/practice'
 import { isoWeekNumber, weekStartInTz } from '../lib/dates'
 
 describe('EmptyState', () => {
@@ -66,6 +71,22 @@ describe('standings helpers', () => {
     ).toBe(70)
   })
 
+  it('ranks by all-time average weekly score', () => {
+    const info = allTimeStanding(
+      [
+        { user_id: 'sam', total: 40 },
+        { user_id: 'sam', total: 37 },
+        { user_id: 'jordan', total: 50 },
+        { user_id: 'jordan', total: 34.2 },
+      ],
+      'sam',
+    )
+    expect(info.rank).toBe(2)
+    expect(info.of).toBe(2)
+    expect(info.score).toBeCloseTo(38.5)
+    expect(info.movement).toBeNull()
+  })
+
   it('computes standing movement', () => {
     const thisWeek = [
       {
@@ -118,6 +139,32 @@ describe('standings helpers', () => {
     const delta = standingDelta(thisWeek, lastWeek, 'a')
     expect(delta.rank).toBe(1)
     expect(delta.movement).toBe(1)
+  })
+})
+
+describe('practice helpers', () => {
+  it('counts new and review solves on a local day', () => {
+    const attempts = [
+      {
+        completed_at: '2026-09-21T15:00:00.000Z',
+        outcome: 'solved_independently',
+        attempt_type: 'new_problem',
+      },
+      {
+        completed_at: '2026-09-21T16:00:00.000Z',
+        outcome: 'solved_with_hints',
+        attempt_type: 'scheduled_review',
+      },
+      {
+        completed_at: '2026-09-20T15:00:00.000Z',
+        outcome: 'solved_independently',
+        attempt_type: 'scheduled_review',
+      },
+    ]
+    expect(countSolvesOnLocalDay(attempts, 'UTC', '2026-09-21')).toBe(1)
+    expect(
+      countSolvesOnLocalDay(attempts, 'UTC', '2026-09-21', 'scheduled_review'),
+    ).toBe(1)
   })
 })
 
