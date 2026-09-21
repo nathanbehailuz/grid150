@@ -4,6 +4,10 @@ import { supabase } from '../lib/supabase'
 /**
  * Subscribe to group-scoped realtime changes and invalidate (refetch).
  * Publishes weekly_score_snapshots, group_join_requests, reactions only.
+ *
+ * Channel topic is unique per mount so multiple subscribers (e.g. leaderboard
+ * + analytics) and React Strict Mode remounts never call `.on()` on an
+ * already-subscribed channel.
  */
 export function useGroupRealtime(
   groupId: string | null,
@@ -16,7 +20,7 @@ export function useGroupRealtime(
     if (!supabase || !groupId) return
 
     const channel = supabase
-      .channel(`group-${groupId}`)
+      .channel(`group-${groupId}:${crypto.randomUUID()}`)
       .on(
         'postgres_changes',
         {

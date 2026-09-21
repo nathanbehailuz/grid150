@@ -36,6 +36,7 @@
 - RPC `RETURNS TABLE` column names collided with INSERT targets; fixed with `#variable_conflict use_column`.
 - Today page stuck on loading from unstable refresh callback identities; stabilized hook deps.
 - Shared DB also has unrelated `public.alba_*` tables; seed/migrations never touch them.
+- Leaderboard → Analytics black-screened because `useGroupRealtime` reused channel topic `group-${id}`; mounting a second subscriber called `.on()` after `subscribe()`. Fixed with a unique topic per mount.
 
 ## How I verified it works
 
