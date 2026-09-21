@@ -72,13 +72,10 @@ export function AppShell({
     <>
       <div className="shell-brand-block">
         <Link to="/" className="shell-brand" onClick={() => setMobileNav(false)}>
-          <img
-            src="/brand.png"
-            alt="Grid150"
-            className="shell-brand-mark"
-            width={192}
-            height={38}
-          />
+          <img src="/logo.svg" alt="" width={32} height={32} />
+          <span>
+            Grid<span className="accent">150</span>
+          </span>
         </Link>
       </div>
 

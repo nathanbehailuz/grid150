@@ -27,17 +27,14 @@
 }
 
 .shell-brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  gap: 0.5rem;
   text-decoration: none;
-  line-height: 0;
-}
-
-.shell-brand-mark {
-  height: 2.25rem;
-  width: auto;
-  max-width: 100%;
-  display: block;
+  color: var(--color-bright);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
 }
 
 .shell-brand .accent,
@@ -1036,11 +1033,11 @@ table.data tr.me td {
   padding: 1.5rem;
 }
 
-.auth-brand {
-  display: block;
-  height: 2.75rem;
-  width: auto;
-  margin: 0 0 0.75rem;
+.auth-card h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  color: var(--color-bright);
+  letter-spacing: -0.03em;
 }
 
 .auth-card .lede {

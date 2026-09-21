@@ -26,7 +26,7 @@
 - Decision: Realtime on `weekly_score_snapshots`, `group_join_requests`, and `reactions` — not `attempts` (peers must not see private fields).
 - Decision: owner `delete_group` clears attributions first because `membership_id` is ON DELETE RESTRICT (alternative: raw table DELETE, which fails).
 - Decision: muted sage-on-charcoal UI; no neon mockup chrome (alternative: shipping Stitch defaults).
-- Decision: designed Grid150 pill mark (`web/public/brand.png`) in shell + auth instead of text + square grid icon; bolt SVG kept as favicon.
+- Decision: brand mark is the sage 3×3 grid SVG (`logo.svg` / favicon), not the Vite purple bolt wordmark that briefly replaced it.
 - Decision: document the full schema in `docs/DATA_MODEL.md` for reviewers instead of leaving it only in migrations.
 
 ## Hard parts / dead ends

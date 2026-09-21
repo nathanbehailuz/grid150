@@ -60,7 +60,8 @@ describe('AppShell', () => {
         </AppShell>
       </MemoryRouter>,
     )
-    expect(screen.getByAltText('Grid150')).toBeInTheDocument()
+    expect(screen.getByText('Grid')).toBeInTheDocument()
+    expect(screen.getByText('150')).toBeInTheDocument()
     expect(screen.getAllByText('Today').length).toBeGreaterThan(0)
     expect(screen.getByText('Page body')).toBeInTheDocument()
   })
